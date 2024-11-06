@@ -8,7 +8,7 @@ This is the project repository for the course **DSAN5800: Advanced NLP** at Geor
 - Yiwei Qi
 
 
-##End-to-End Retrieval-Augmented Generation (RAG) System
+## End-to-End Retrieval-Augmented Generation (RAG) System
 
 ### Description:
 
