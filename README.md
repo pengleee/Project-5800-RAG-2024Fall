@@ -28,3 +28,9 @@ In this project, you will build a retrieval-augmented generation (RAG) system th
 
 - [HuggingFace RAG Implementation](https://huggingface.co/docs/transformers/model_doc/rag)
 - [Google Drive Workspace](https://drive.google.com/drive/folders/1ygQmygUG2Ta_nXqedpL5KhNwzgbxjjD4?usp=share_link)
+
+### Project Deliverables:
+
+- A well-documented GitHub repository containing your code
+- A project report (4-6 pages) outlining your methodology, experiments, and results
+- A 15 minute final presentation / demo showcasing your project, followed by a 5 minute Q&A session
