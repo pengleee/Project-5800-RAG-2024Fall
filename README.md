@@ -28,6 +28,7 @@ In this project, you will build a retrieval-augmented generation (RAG) system th
 
 - [HuggingFace RAG Implementation](https://huggingface.co/docs/transformers/model_doc/rag)
 - [Google Drive Workspace](https://drive.google.com/drive/folders/1ygQmygUG2Ta_nXqedpL5KhNwzgbxjjD4?usp=share_link)
+- [LangChain: Build a Retrieval Augmented Generation (RAG) App](https://python.langchain.com/docs/tutorials/rag/)
 
 ### Project Deliverables:
 
