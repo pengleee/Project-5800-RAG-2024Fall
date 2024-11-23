@@ -95,4 +95,4 @@ if query and retriever.index:
 
 
 ## conda activate dsan5800
-## streamlit run rag_app.py
+# streamlit run rag_app.py
