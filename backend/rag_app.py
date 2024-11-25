@@ -6,11 +6,17 @@ import docx
 import openai
 import streamlit as st
 import json
+import os
+
 
 # import the openai api key
-with open('/Users/pengli/.api-keys.json') as f:
+home_dir = os.environ['HOME']
+
+with open(f'{home_dir}/.api-keys.json') as f:
     keys = json.load(f)
-OPENAI_API_KEY = keys['OPENAI_API_KEY']
+
+# Your API key
+API_KEY = keys['OPENAI_API_KEY']
 
 class DenseRetriever:
     def __init__(self, model_name="all-MiniLM-L6-v2"):
@@ -35,7 +41,7 @@ class DenseRetriever:
 class RAGSystem:
     def __init__(self, retriever):
         self.retriever = retriever
-        openai.api_key = OPENAI_API_KEY  # use your own api key
+        openai.api_key = API_KEY  # use your own api key
 
     def generate_response(self, query, k=5):
         """Generate a response by combining retrieval and generation."""
