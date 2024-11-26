@@ -9,18 +9,16 @@ import json
 import os
 
 
-'''
-# import the openai api key
-home_dir = os.environ['HOME']
+# # import the openai api key
+# home_dir = os.environ['HOME']
 
-with open(f'{home_dir}/.api-keys.json') as f:
-    keys = json.load(f)
+# with open(f'{home_dir}/.api-keys.json') as f:
+#     keys = json.load(f)
 
-# Your API key
-API_KEY = keys['OPENAI_API_KEY']
-'''
+# # Your API key
+# API_KEY = keys['OPENAI_API_KEY']
 
-API_KEY = "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"
+# API_KEY = "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"
 
 class DenseRetriever:
     def __init__(self, model_name="all-MiniLM-L6-v2"):
