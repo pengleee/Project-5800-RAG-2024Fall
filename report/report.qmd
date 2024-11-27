@@ -1,0 +1,102 @@
+---
+title: 'End-to-End Retrieval-Augmented Generation (RAG) System' 
+subtitle: 'DSAN 5800 Project Report'
+authors:
+    - 'Yuting Fan'
+    - 'Peng Li'
+    - 'Yiwei Qi'
+date: '10 December 2024'
+bibliography: references.bib
+format: 
+    html:
+        table-of-contents: true
+        df-print: kable
+    pdf:
+        link-citations: true
+prefer-html: true
+---
+
+# Introduction
+> An Introduction is about the data science question. It is about the topics you plan to explore. 
+> The Introduction is not about the datasets, variables, methods or models.
+> The introduction helps the reader to understand what the data science question is, what the supporting topics and issues are, and what the overall area is about.
+> An introduction allows the reader to “get to know” the data science question and related areas of interest.
+> Ideally, an introduction helps the reader to care about the topics and to want to read more.
+> The Intro should not contain any information about the dataset or the data cleaning, prep, processing, etc. Everything about the dataset goes into the Analysis section under the “About the Data” subsection.
+> Introductions can and should include basis, background, history, the state-of-the-art, images, references, etc.
+> An introduction will also help the reader to understand who the topics affect and why the topics matter.
+
+Homeownership has long been a cornerstone of the American Dream, symbolizing financial stability, personal achievement, and community engagement. Yet, achieving and maintaining homeownership remains an elusive goal for many. In the United States, homeownership is influenced by a variety of factors, including income, education, marital status, and geographic region. These factors intersect with historical trends, public policy, and systemic disparities, making homeownership both a reflection of societal values and a critical indicator of economic well-being. Understanding what drives homeownership rates is not just an economic question; it is also a social imperative that impacts individuals, families, and communities across the nation.
+
+The historical context of homeownership in the U.S. is deeply intertwined with economic growth, government policies, and social equity. In the mid-20th century, programs like the GI Bill and federally subsidized mortgages contributed to a boom in homeownership, particularly in suburban areas. However, these policies often excluded marginalized groups, exacerbating racial and economic disparities. Urban renewal programs, redlining practices, and discriminatory lending further entrenched barriers for communities of color. Today, while homeownership rates are a critical metric of prosperity, they also reflect persistent inequalities in wealth distribution, access to credit, and economic opportunity.
+
+The issue of homeownership is not confined to individual households. It has broader implications for community development, urban planning, and regional economics. Homeownership fosters neighborhood stability, civic participation, and intergenerational wealth. Conversely, declining homeownership rates can signal economic distress, housing unaffordability, or shifts in societal norms, such as delayed marriage or increasing mobility among younger generations. Regional differences also play a significant role, with rural areas often exhibiting higher homeownership rates than urban centers due to lower housing costs and different economic structures.
+
+This topic matters because homeownership is a crucial determinant of financial security and social mobility in the United States. For many, owning a home represents the largest asset they will ever acquire. It provides a hedge against inflation, access to better schools, and a stable environment for raising families. Yet, systemic barriers continue to hinder equitable access to homeownership, particularly for lower-income households, young adults, and historically marginalized communities. By examining the factors that drive homeownership rates, we can identify leverage points for policymakers, advocates, and industry leaders to create more inclusive and sustainable housing markets.
+
+Moreover, the question of homeownership intersects with pressing contemporary issues such as housing affordability, student loan debt, and the gig economy. Rising housing costs have made homeownership increasingly unattainable for many Americans, even as rental costs surge, leaving limited options for saving. Simultaneously, younger generations face unprecedented economic challenges, including wage stagnation and mounting debt, which delay their entry into homeownership. Exploring these dynamics is essential to understanding how to support current and future homeowners and mitigate the broader economic and social repercussions of declining access to housing.
+
+Ultimately, this analysis seeks to contribute to a deeper understanding of the factors influencing homeownership rates across the United States. By exploring these dynamics through a data-driven lens, we aim to inform public discourse and policy development, ensuring that homeownership remains a viable and equitable goal for all Americans. The insights gained from this study have the potential to address longstanding disparities, support economic resilience, and guide strategic investments in housing and community development.
+
+
+
+
+# Analysis and Statistical Methods
+The Analysis section will contain many subsections. You may name these subsections in any way that makes sense. However, the first subsection will focus on the datasets, the background, cleaning and preparation, formatting, and other processing.
+
+The next subsections will be about the data analysis using statistical methods/models. Give an explanation about why you used each statistical analysis method, and a brief theoretical introduction. Also, describe how you used these approaches when analyzing your datasets.
+
+## Data Gathering
+
+| Variable Name | Description                                                                                                  |
+|---------------|--------------------------------------------------------------------------------------------------------------|
+| YEAR          | The year of the survey or census data.                                                                       |
+| SAMPLE        | The specific IPUMS-USA sample from which the data originates.                                                |
+| SERIAL        | Household serial number, unique within a sample, identifying households.                                     |
+| CBSERIAL      | Household serial number, standardized across the Census Bureau's datasets.                                   |
+| HHWT          | Household weight, used to produce nationally representative estimates of households.                         |
+| CLUSTER       | Sampling cluster, used in survey designs for variance estimation.                                            |
+| REGION        | U.S. region where the household is located (e.g., Northeast, South, Midwest, West).                          |
+| STATEFIP      | Federal Information Processing Standard (FIPS) code identifying the U.S. state.                              |
+| METRO         | Metropolitan status indicator (e.g., metropolitan, non-metropolitan).                                        |
+| STRATA        | Stratification variable, used in survey design for variance estimation.                                      |
+| GQ            | Group quarters type (e.g., households, institutions, dormitories, military barracks).                        |
+| OWNERSHP      | Homeownership status (e.g., owned, rented, occupied without payment).                                        |
+| OWNERSHPD     | Detailed homeownership status, with additional breakdowns.                                                   |
+| PERNUM        | Person number within a household, uniquely identifying individuals in the household.                         |
+| PERWT         | Person weight, used to produce nationally representative estimates of individuals.                           |
+| SEX           | Sex of the individual (e.g., male, female).                                                                  |
+| AGE           | Age of the individual in years.                                                                              |
+| MARST         | Marital status of the individual (e.g., married, single, divorced, widowed).                                 |
+| RACE          | General racial category of the individual (e.g., White, Black, Asian).                                       |
+| RACED         | Detailed racial classification of the individual, providing more specific categories.                        |
+| EDUC          | General educational attainment level (e.g., high school, some college).                                      |
+| EDUCD         | Detailed educational attainment level, with specific categories.                                             |
+| EMPSTAT       | Employment status of the individual (e.g., employed, unemployed, not in labor force).                        |
+| EMPSTATD      | Detailed employment status, with additional breakdowns.                                                      |
+| CLASSWKR      | General class of worker (e.g., private sector, government, self-employed).                                   |
+| CLASSWKRD     | Detailed class of worker, with more specific categories.                                                     |
+| OCC           | Occupation code, identifying the individual's specific occupation.                                           |
+| INCTOT        | Total personal income of the individual from all sources in the previous year.                               |
+| FTOTINC       | Total family income from all sources in the previous year.                                                   |
+
+
+# Results
+The Results section will also have many subsections – one for each model or method – as well as many tables, visualizations (graphically), and technical explanations.
+
+Results are technical and they explore what each model or method reveals. Results also discuss and compare parameters. The Results section offers technical information about what was found in the analysis.
+
+Note: Results can be messy. Make sure your paper has a good flow and offers clarity and ease of reading. Tables, figures, etc. are helpful.
+
+
+# Conclusions
+This area explains what was actually found in a way that would make sense to anyone. The Conclusions are one of the most important parts of any paper. They will not be technical. All technical results should have been described and discussed in the Results section.
+
+The Conclusions should focus on key and important findings and how these findings affect real-life and real people.
+
+Some say that the Conclusions are the most difficult to write. If you do not understand what you really did, how can you explain it to others? Being able to make technical results and complex models useable to normal humans (like managers, CEOs, Deans, clients, etc.) is critical in data science. The Conclusions area is important and if it is not good, many points can be lost.
+
+# References
+
+
+# Appendix
