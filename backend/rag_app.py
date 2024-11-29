@@ -18,7 +18,7 @@ import os
 # # Your API key
 # API_KEY = keys['OPENAI_API_KEY']
 
-API_KEY = "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"
+API_KEY = 'YOUR OPENAI API KEY'
 
 class DenseRetriever:
     def __init__(self, model_name="all-MiniLM-L6-v2"):
