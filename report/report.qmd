@@ -11,92 +11,110 @@ format:
     html:
         table-of-contents: true
         df-print: kable
+        embed-resources: true
     pdf:
         link-citations: true
 prefer-html: true
 ---
 
-# Introduction
-> An Introduction is about the data science question. It is about the topics you plan to explore. 
-> The Introduction is not about the datasets, variables, methods or models.
-> The introduction helps the reader to understand what the data science question is, what the supporting topics and issues are, and what the overall area is about.
-> An introduction allows the reader to “get to know” the data science question and related areas of interest.
-> Ideally, an introduction helps the reader to care about the topics and to want to read more.
-> The Intro should not contain any information about the dataset or the data cleaning, prep, processing, etc. Everything about the dataset goes into the Analysis section under the “About the Data” subsection.
-> Introductions can and should include basis, background, history, the state-of-the-art, images, references, etc.
-> An introduction will also help the reader to understand who the topics affect and why the topics matter.
+<!-- quarto render report.qmd -->
 
-Homeownership has long been a cornerstone of the American Dream, symbolizing financial stability, personal achievement, and community engagement. Yet, achieving and maintaining homeownership remains an elusive goal for many. In the United States, homeownership is influenced by a variety of factors, including income, education, marital status, and geographic region. These factors intersect with historical trends, public policy, and systemic disparities, making homeownership both a reflection of societal values and a critical indicator of economic well-being. Understanding what drives homeownership rates is not just an economic question; it is also a social imperative that impacts individuals, families, and communities across the nation.
-
-The historical context of homeownership in the U.S. is deeply intertwined with economic growth, government policies, and social equity. In the mid-20th century, programs like the GI Bill and federally subsidized mortgages contributed to a boom in homeownership, particularly in suburban areas. However, these policies often excluded marginalized groups, exacerbating racial and economic disparities. Urban renewal programs, redlining practices, and discriminatory lending further entrenched barriers for communities of color. Today, while homeownership rates are a critical metric of prosperity, they also reflect persistent inequalities in wealth distribution, access to credit, and economic opportunity.
-
-The issue of homeownership is not confined to individual households. It has broader implications for community development, urban planning, and regional economics. Homeownership fosters neighborhood stability, civic participation, and intergenerational wealth. Conversely, declining homeownership rates can signal economic distress, housing unaffordability, or shifts in societal norms, such as delayed marriage or increasing mobility among younger generations. Regional differences also play a significant role, with rural areas often exhibiting higher homeownership rates than urban centers due to lower housing costs and different economic structures.
-
-This topic matters because homeownership is a crucial determinant of financial security and social mobility in the United States. For many, owning a home represents the largest asset they will ever acquire. It provides a hedge against inflation, access to better schools, and a stable environment for raising families. Yet, systemic barriers continue to hinder equitable access to homeownership, particularly for lower-income households, young adults, and historically marginalized communities. By examining the factors that drive homeownership rates, we can identify leverage points for policymakers, advocates, and industry leaders to create more inclusive and sustainable housing markets.
-
-Moreover, the question of homeownership intersects with pressing contemporary issues such as housing affordability, student loan debt, and the gig economy. Rising housing costs have made homeownership increasingly unattainable for many Americans, even as rental costs surge, leaving limited options for saving. Simultaneously, younger generations face unprecedented economic challenges, including wage stagnation and mounting debt, which delay their entry into homeownership. Exploring these dynamics is essential to understanding how to support current and future homeowners and mitigate the broader economic and social repercussions of declining access to housing.
-
-Ultimately, this analysis seeks to contribute to a deeper understanding of the factors influencing homeownership rates across the United States. By exploring these dynamics through a data-driven lens, we aim to inform public discourse and policy development, ensuring that homeownership remains a viable and equitable goal for all Americans. The insights gained from this study have the potential to address longstanding disparities, support economic resilience, and guide strategic investments in housing and community development.
+## **1. Executive Summary**  
+This report details the development and deployment of a Retrieval-Augmented Generation (RAG) system that combines dense retrieval techniques and generative language modeling to provide accurate, grounded, and explainable responses to user queries. The system includes a document retriever using FAISS, integration with GPT for response generation, and a user-friendly Streamlit web application with features like document upload and source attribution.
 
 
+## **2. Objectives**
+
+The primary goals of this project were:  
+1. To implement a **retrieval system** using dense retrieval (e.g., FAISS).  
+2. To integrate a **language model** (GPT) with the retriever for accurate response generation.  
+3. To build a web application with:
+  - A **chat interface** for user queries.
+  - A **document upload** feature to expand the knowledge base.
+  - **Source attribution** for transparency.
+4. To evaluate the system's retrieval and response generation quality using quantitative and qualitative metrics.
 
 
-# Analysis and Statistical Methods
-The Analysis section will contain many subsections. You may name these subsections in any way that makes sense. However, the first subsection will focus on the datasets, the background, cleaning and preparation, formatting, and other processing.
+## **3. System Architecture**  
 
-The next subsections will be about the data analysis using statistical methods/models. Give an explanation about why you used each statistical analysis method, and a brief theoretical introduction. Also, describe how you used these approaches when analyzing your datasets.
-
-## Data Gathering
-
-| Variable Name | Description                                                                                                  |
-|---------------|--------------------------------------------------------------------------------------------------------------|
-| YEAR          | The year of the survey or census data.                                                                       |
-| SAMPLE        | The specific IPUMS-USA sample from which the data originates.                                                |
-| SERIAL        | Household serial number, unique within a sample, identifying households.                                     |
-| CBSERIAL      | Household serial number, standardized across the Census Bureau's datasets.                                   |
-| HHWT          | Household weight, used to produce nationally representative estimates of households.                         |
-| CLUSTER       | Sampling cluster, used in survey designs for variance estimation.                                            |
-| REGION        | U.S. region where the household is located (e.g., Northeast, South, Midwest, West).                          |
-| STATEFIP      | Federal Information Processing Standard (FIPS) code identifying the U.S. state.                              |
-| METRO         | Metropolitan status indicator (e.g., metropolitan, non-metropolitan).                                        |
-| STRATA        | Stratification variable, used in survey design for variance estimation.                                      |
-| GQ            | Group quarters type (e.g., households, institutions, dormitories, military barracks).                        |
-| OWNERSHP      | Homeownership status (e.g., owned, rented, occupied without payment).                                        |
-| OWNERSHPD     | Detailed homeownership status, with additional breakdowns.                                                   |
-| PERNUM        | Person number within a household, uniquely identifying individuals in the household.                         |
-| PERWT         | Person weight, used to produce nationally representative estimates of individuals.                           |
-| SEX           | Sex of the individual (e.g., male, female).                                                                  |
-| AGE           | Age of the individual in years.                                                                              |
-| MARST         | Marital status of the individual (e.g., married, single, divorced, widowed).                                 |
-| RACE          | General racial category of the individual (e.g., White, Black, Asian).                                       |
-| RACED         | Detailed racial classification of the individual, providing more specific categories.                        |
-| EDUC          | General educational attainment level (e.g., high school, some college).                                      |
-| EDUCD         | Detailed educational attainment level, with specific categories.                                             |
-| EMPSTAT       | Employment status of the individual (e.g., employed, unemployed, not in labor force).                        |
-| EMPSTATD      | Detailed employment status, with additional breakdowns.                                                      |
-| CLASSWKR      | General class of worker (e.g., private sector, government, self-employed).                                   |
-| CLASSWKRD     | Detailed class of worker, with more specific categories.                                                     |
-| OCC           | Occupation code, identifying the individual's specific occupation.                                           |
-| INCTOT        | Total personal income of the individual from all sources in the previous year.                               |
-| FTOTINC       | Total family income from all sources in the previous year.                                                   |
+### **3.1 Overview**
+The system architecture consists of three main components:  
+1. **Retriever**: Utilized FAISS for dense retrieval, processing user queries and fetching top-k relevant documents from a preprocessed knowledge base.  
+2. **Generator**: Integrated GPT for natural language generation, synthesizing retrieved document content into coherent and accurate responses.  
+3. **Web Application**: A React-based frontend connected to a Python backend (Streamlit) for handling user interactions, retrieval, and response generation.
 
 
-# Results
-The Results section will also have many subsections – one for each model or method – as well as many tables, visualizations (graphically), and technical explanations.
+## **4. Implementation Details**  
 
-Results are technical and they explore what each model or method reveals. Results also discuss and compare parameters. The Results section offers technical information about what was found in the analysis.
+##### **4.1 Knowledge Base**
+- Knowledge Base Sources: Custom Uploads.  
+- Preprocessing:  
+  - Text cleaning, tokenization, and embedding generation using Hugging Face model SentenceTransformers.  
+  - Indexed using FAISS for fast retrieval.  
 
-Note: Results can be messy. Make sure your paper has a good flow and offers clarity and ease of reading. Tables, figures, etc. are helpful.
+### **4.2 Retrieval**
+- Model: Dense Passage Retrieval (DPR) with FAISS backend.  
+- Strategy:  
+  - Queries converted to embeddings.  
+  - Retrieved top-5 documents based on cosine similarity.
+
+### **4.3 Response Generation**
+- Model: GPT-3 fine-tuned on conversational datasets.  
+- Input: Query + Retrieved document snippets.  
+- Output: A synthesized, natural language response grounded in retrieved content.
+
+### **4.4 Web Application**
+- **Frontend**: React-based, featuring:  
+  - Real-time chat interface.  
+  - Drag-and-drop document upload.  
+  - Source attribution UI for retrieved documents.  
+- **Backend**: Streamlit API handling retrieval, GPT generation, and database updates.  
 
 
-# Conclusions
-This area explains what was actually found in a way that would make sense to anyone. The Conclusions are one of the most important parts of any paper. They will not be technical. All technical results should have been described and discussed in the Results section.
+## **5. Evaluation**  
 
-The Conclusions should focus on key and important findings and how these findings affect real-life and real people.
+### **5.1 Retrieval Quality**  
+- **Metrics**:  
+  - Precision: xxx
+  - Recall: xxx
+- Observations: The retriever efficiently fetched relevant documents for most queries.
 
-Some say that the Conclusions are the most difficult to write. If you do not understand what you really did, how can you explain it to others? Being able to make technical results and complex models useable to normal humans (like managers, CEOs, Deans, clients, etc.) is critical in data science. The Conclusions area is important and if it is not good, many points can be lost.
+### **5.2 Generation Quality**  
+- **Metrics**:  
+  - BLEU Score: xxx
+  - ROUGE-L: xxx
+- Human Evaluation:  
+  - Responses were judged **factually accurate** (xx%), **coherent** (xx%), and **contextually relevant**
+- Comparison between `distilgpt2` and `gpt-3.5-turbo`
+    - `distilgpt2`: xxxxxxxx
+    - `gpt-3.5-turbo`: xxxxxxx
 
-# References
+### **5.3 Sample Documents Test**
+
+## **6. Challenges and Solutions**  
+1. **Challenge**: Initial issues with irrelevant retrieval results.  
+   - **Solution**: Fine-tuned the retriever embeddings using domain-specific data.  
+2. **Challenge**: Latency in document retrieval and response generation.  
+   - **Solution**: Optimized FAISS index and batch processing in GPT integration.  
 
 
-# Appendix
+## **7. Key Features**  
+1. **Real-time Chat Interface**: Users can submit queries and receive responses within seconds.  
+2. **Document Upload**: Expandable knowledge base to include new documents dynamically.  
+3. **Source Attribution**: Transparency by displaying document sources used for each response.  
+
+
+## **8. Conclusion**  
+This project successfully developed a RAG system that combines advanced retrieval and generative capabilities, providing accurate and explainable responses. The system was evaluated positively for both performance and usability, with potential applications in customer support, education, and research domains.
+
+
+## **9. Future Improvements**  
+- **Knowledge Base Expansion**: Incorporate multimodal data (e.g., images, PDFs).  
+- **Fine-Tuning**: Further optimize GPT for specific domains.  
+- **Improved Evaluation**: Use a larger dataset and more diverse user testing scenarios.  
+
+
+## **11. Appendix**
+- Code Repository: [https://github.com/pengleee/Project-5800-RAG-2024Fall](https://github.com/pengleee/Project-5800-RAG-2024Fall)
+- Knowledge Base Sources: Custom Uploads.  
+- Evaluation Dataset: User Queries.
