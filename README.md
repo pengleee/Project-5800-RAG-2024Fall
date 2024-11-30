@@ -5,9 +5,9 @@
 This is the project repository for the course **DSAN5800: Advanced NLP** at Georgetown University, 2024 Fall.
 
 ### Group Members
-- **Backend Developer**: Yuting Fan ([yf265@georgetown.edu](mailto:yf265@georgetown.edu))
-- **Frontend Developer**: Peng Li ([pl800@georgetown.edu](mailto:pl800@georgetown.edu))
-- **System Evaluator and Presentation Coordinator**: Yiwei Qi ([yq125@georgetown.edu](mailto:yq125@georgetown.edu))
+- Yuting Fan ([yf265@georgetown.edu](mailto:yf265@georgetown.edu))
+- Peng Li ([pl800@georgetown.edu](mailto:pl800@georgetown.edu))
+- Yiwei Qi ([yq125@georgetown.edu](mailto:yq125@georgetown.edu))
 
 ### Description:
 

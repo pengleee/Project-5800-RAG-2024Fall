@@ -4,7 +4,7 @@ from sentence_transformers import SentenceTransformer
 from PyPDF2 import PdfReader
 import docx
 import openai
-import streamlit as st
+from flask import Flask, render_template
 import json
 import os
 
@@ -81,6 +81,7 @@ def process_uploaded_file(file):
     else:
         raise ValueError("Unsupported file type!")
 
+'''
 # Streamlit UI
 st.title("Contextual Retrieval-Augmented Generation (RAG) System")
 uploaded_file = st.file_uploader("Upload a document (TXT, PDF, DOCX)", type=["txt", "pdf", "docx"])
@@ -105,7 +106,20 @@ if query and retriever.index:
     st.subheader("Retrieved Documents")
     for i, (doc, score) in enumerate(retrieved_docs):
         st.write(f"{i+1}. {doc} (Score: {score})")
+'''
 
+app = Flask(__name__)  # Initialize the Flask application
+
+@app.route('/')  # Define the home route
+def home():
+    return render_template('index.html')
+
+@app.route('/about')
+def about():
+    return "This is the About page!"
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 ## conda activate dsan5800
 # streamlit run ./backend/rag_app.py
