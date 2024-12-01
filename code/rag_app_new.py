@@ -29,11 +29,12 @@ class DenseRetriever:
 class RAGSystem:
     def __init__(self, retriever):
         self.retriever = retriever
-        openai.api_key = ""  
-                          # use your own api key
 
     def generate_response(self, query, k=5):
         """Generate a response by combining retrieval and generation."""
+        if not openai.api_key:
+            raise ValueError("API key is not set. Please enter your OpenAI API key.")
+        
         retrieved_docs = self.retriever.retrieve(query, k)
         context = "\n".join([f"{i+1}. {doc}" for i, (doc, _) in enumerate(retrieved_docs)])
         prompt = (
@@ -42,7 +43,7 @@ class RAGSystem:
             f"Response:"
         )
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # can change the model base on your task
+            model="gpt-3.5-turbo",  # change model based on user selection
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": prompt}
@@ -69,7 +70,35 @@ def process_uploaded_file(file):
         raise ValueError("Unsupported file type!")
 
 # Streamlit UI
-st.title("Contextual Retrieval-Augmented Generation (RAG) System")
+
+st.set_page_config(page_title="Contextual Retrieval-Augmented Generation (RAG) System", page_icon="📖", layout="wide")
+
+# Sidebar Instructions & API Key Input
+st.sidebar.header("App Instructions")
+st.sidebar.write("""
+This is a Contextual Retrieval-Augmented Generation (RAG) system. 
+1. Upload a document (TXT, PDF, DOCX) using the file uploader.
+2. After uploading, input a question about the content of the document.
+3. The system will retrieve relevant documents and generate a response using a language model.
+""")
+
+# API key input with reminder and question mark
+openai_api_key = st.sidebar.text_input(
+    "Enter your OpenAI API Key", 
+    type="password", 
+    help="You can get a key at https://platform.openai.com/account/api-keys."
+)
+
+if openai_api_key:
+    openai.api_key = openai_api_key
+
+# Model Selection
+model_name = st.sidebar.selectbox("Select Model", ["gpt-3.5-turbo", "gpt-4"])
+
+# Main Header
+st.header("📖 Contextual Retrieval-Augmented Generation (RAG) System")
+
+# File Upload
 uploaded_file = st.file_uploader("Upload a document (TXT, PDF, DOCX)", type=["txt", "pdf", "docx"])
 
 retriever = DenseRetriever()
@@ -85,14 +114,17 @@ if uploaded_file:
 
 query = st.text_input("Enter your question:")
 if query and retriever.index:
-    response, retrieved_docs = rag_system.generate_response(query)
-    st.subheader("Response")
-    st.write(response)
+    try:
+        response, retrieved_docs = rag_system.generate_response(query)
+        st.subheader("Response")
+        st.write(response)
 
-    st.subheader("Retrieved Documents")
-    for i, (doc, score) in enumerate(retrieved_docs):
-        st.write(f"{i+1}. {doc} (Score: {score})")
+        st.subheader("Retrieved Documents")
+        for i, (doc, score) in enumerate(retrieved_docs):
+            st.write(f"{i+1}. {doc} (Score: {score})")
+    except ValueError as e:
+        st.error(str(e))
 
 
 ## conda activate dsan5800
-## streamlit run rag_app.py
+## streamlit run rag_app_new.py
