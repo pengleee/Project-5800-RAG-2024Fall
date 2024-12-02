@@ -30,7 +30,7 @@ class RAGSystem:
     def __init__(self, retriever):
         self.retriever = retriever
 
-    def generate_response(self, query, k=5):
+    def generate_response(self, query, model_name="gpt-3.5-turbo", k=5):
         """Generate a response by combining retrieval and generation."""
         if not openai.api_key:
             raise ValueError("API key is not set. Please enter your OpenAI API key.")
@@ -43,7 +43,7 @@ class RAGSystem:
             f"Response:"
         )
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # change model based on user selection
+            model=model_name,  # change model based on user selection
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": prompt}
@@ -93,7 +93,7 @@ if openai_api_key:
     openai.api_key = openai_api_key
 
 # Model Selection
-model_name = st.sidebar.selectbox("Select Model", ["gpt-3.5-turbo", "gpt-4"])
+model_name = st.sidebar.selectbox("Select Model", ["gpt-3.5-turbo", "gpt-4o"])
 
 # Main Header
 st.header("📖 Contextual Retrieval-Augmented Generation (RAG) System")
@@ -113,9 +113,12 @@ if uploaded_file:
         st.error(str(e))
 
 query = st.text_input("Enter your question:")
+
 if query and retriever.index:
     try:
-        response, retrieved_docs = rag_system.generate_response(query)
+        # Pass the user-selected model to generate_response
+        response, retrieved_docs = rag_system.generate_response(query, model_name=model_name)
+        
         st.subheader("Response")
         st.write(response)
 
@@ -124,7 +127,6 @@ if query and retriever.index:
             st.write(f"{i+1}. {doc} (Score: {score})")
     except ValueError as e:
         st.error(str(e))
-
 
 ## conda activate dsan5800
 ## streamlit run rag_app_new.py
