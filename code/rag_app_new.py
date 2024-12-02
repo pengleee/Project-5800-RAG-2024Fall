@@ -5,12 +5,14 @@ from PyPDF2 import PdfReader
 import docx
 import openai
 import streamlit as st
+from sentence_transformers import CrossEncoder
 
 class DenseRetriever:
-    def __init__(self, model_name="all-MiniLM-L6-v2"):
+    def __init__(self, model_name="all-MiniLM-L6-v2", reranker_model_name="cross-encoder/ms-marco-MiniLM-L-12-v2"):
         self.model = SentenceTransformer(model_name)
         self.index = None
         self.documents = []
+        self.reranker = CrossEncoder(reranker_model_name)
 
     def build_index(self, documents):
         """Build a FAISS index for the given documents."""
@@ -20,11 +22,18 @@ class DenseRetriever:
         self.index.add(embeddings)
 
     def retrieve(self, query, k=5):
-        """Retrieve the top-k most relevant documents for a query."""
+        """Retrieve the top-k most relevant documents for a query using FAISS."""
         query_vector = self.model.encode([query])
         distances, indices = self.index.search(query_vector, k)
         results = [(self.documents[i], distances[0][idx]) for idx, i in enumerate(indices[0])]
         return results
+
+    def rerank(self, query, retrieved_docs):
+        """Re-rank the retrieved documents using a cross-encoder."""
+        pairs = [(query, doc[0]) for doc in retrieved_docs]
+        scores = self.reranker.predict(pairs)
+        reranked = sorted(zip(retrieved_docs, scores), key=lambda x: x[1], reverse=True)
+        return [(doc[0], score) for doc, score in reranked]
 
 class RAGSystem:
     def __init__(self, retriever):
@@ -36,21 +45,22 @@ class RAGSystem:
             raise ValueError("API key is not set. Please enter your OpenAI API key.")
         
         retrieved_docs = self.retriever.retrieve(query, k)
-        context = "\n".join([f"{i+1}. {doc}" for i, (doc, _) in enumerate(retrieved_docs)])
+        reranked_docs = self.retriever.rerank(query, retrieved_docs)
+        context = "\n".join([f"{i+1}. {doc}" for i, (doc, _) in enumerate(reranked_docs)])
         prompt = (
             f"Contextual documents:\n{context}\n\n"
             f"Query: {query}\n"
             f"Response:"
         )
         response = openai.ChatCompletion.create(
-            model=model_name,  # change model based on user selection
+            model=model_name, # change model based on user selection
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=1000
         )
-        return response['choices'][0]['message']['content'].strip(), retrieved_docs
+        return response['choices'][0]['message']['content'].strip(), reranked_docs
 
 def process_uploaded_file(file):
     """Extract text from different document types."""
