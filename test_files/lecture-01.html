@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lecture 01</title>
+    <meta charset="utf-8">
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+    <!-- <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          CommonHTML: {
+            scale: 100
+          }
+        });
+    </script> -->
+    <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            commonHTML: { 
+                scale: 100 
+            },
+            extensions: ["tex2jax.js"],
+            jax: [
+                "input/TeX", 
+                "output/HTML-CSS"
+            ],
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                processEscapes: true
+            },
+            "HTML-CSS": { fonts: ["STIX"] }
+        });
+    </script>
+    <!-- <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://chrislarson1.github.io/remark-formatting/style.css">
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# ANLY-5800
+# Advanced Natural Language Processing
+
+#### Lecture 01
+
+Course intro + refresher
+
+
+<br/>
+
+Georgetown University
+
+Fall 2024
+
+---
+## Lesson plan
+
+- Lecture
+    - Course logistics
+    - Course overview
+    - Math refresher
+
+---
+
+## Instructor: Chris Larson
+
+#### Education
+
+B.A. | Coe College | Physics
+
+Ph.D. | Cornell University | Mechanical Engineering, Computer Science
+
+#### Professional Experience
+
+**AnyTeam** | Principal Engineer | LLM agents for B2B Sales | 2024 - present
+<br> In stealth, seed round ($10M) | SignalFire Partners, Crosslink Capital
+
+**Virtex Labs** | Founder | k8s control plane LLM agent |  2023 - present
+<br>In stealth, self funded
+
+**StormForge** | Lead Engineer | k8s optimization tools | 2020 - 2023
+<br>Series A,B ($80M) | Foxconn Ventures, Insight Partners
+
+**Capital One** | Lead SWE, Sr. Manager (ML) | Conversational AI, Eno | 2017 - 2020
+
+**Corning Inc.** | Sr. Research Engineer | Corporate Engineering | 2011 - 2013
+
+**United Space Alliance (NASA)** | Engineer II | Modeling & simulation | 2009-2011
+
+---
+class: center, middle
+
+## [Course website](https://sites.google.com/georgetown.edu/anly-5800/)
+
+---
+
+## Assignment 01
+
+Assignment 01 is aimed at getting you up to speed with some of the underlying concepts used in machine learning and NLP. Feel free to use definitions from Wikipedia to aid in this self study, but refrain from searching for answers directly. If you get stuck, team up with no more than three classmates and work together. If you work in teams, please list your teammates on your submission. 
+
+### Topics covered
+- Linear algebra
+- Probability theory
+
+### Grade: 10%
+
+### Due Date: Sep 18, 11:59PM EST
+
+---
+
+
+class: center, middle
+
+# Course Overview
+
+---
+
+## What is Natural Language Processing (NLP)
+
+- Closely related and has evolved along with the field of computational linguistics
+
+    - Linguistics is primarily conserned with language itself; in particular its structure, the nature of meaning that can be derived it, and the ability to reason over it.
+
+    - The term *natural language processing*, or *NLP* for short, most often refers to modern machine learning systems that allow computers to understand natural language without using explicit rules. These systems use statistical machine learning to learn patterns from large quantities of text data.
+
+- This course will focus on *NLP* as described above
+
+---
+
+## What makes NLP interesting?
+
+- Ambiguity
+	- One morning I shot an elephant in my pajamas
+	- Where did the child say that he got hurt?
+	- Every eight seconds some woman in the U.S. gives birth
+
+- Sparse data (Zipf’s Law) is an observation about the frequency distribution of words in natural language
+
+<img src='content/zipf.png'; class="center-content"; style="width:32%;"/>
+
+- Polysemy
+    - The same word can mean different things in different contexts (e.g., *leaves*)
+
+- Language use varies across domains
+
+- World knowledge plays a huge role in language in subtle ways
+	- “How could you forget my birthday” vs. “I really enjoyed that birthday present from you”
+
+---
+
+## Modules in Linguistics
+
+- Knowledge of language is characterized using different modules that each solve different design problems. For example:
+	
+    - Morphology is the subfield concerned with the relationship between internal word structure and meaning
+	
+    - Syntax is the subfield concerned with sentence structure
+	
+    - Semantics is the subfield concerned with sentence meaning 
+
+- Our goal in NLP is to build mathematical models that account for the day-to-day mental activities that we take for granted. Here are just a few basic correspondences:
+
+	- **Module** $\leftrightarrow$ **Technology**
+	
+    - Morphology $\leftrightarrow$ tokenization
+	
+    - Semantics $\leftrightarrow$ language modeling (major difference between formal semantic models and how NLP models approach "meaning")
+	
+    - Syntax $\leftrightarrow$ dependency parsing
+
+---
+
+## Modern NLP methods are rooted in statistical machine learning
+
+<br/>
+
+<img src='content/machine-learning-diagram.png'; class="center-content"; style="width:100%;"/>
+
+---
+
+class: center, middle
+
+# Math Refresher
+
+#### Linear Algebra
+
+---
+
+## Feature representation
+
+- By convention, we represent data as a matrix of numbers where:
+
+    - Columns correspond to features
+
+    - Rows correspond to observations of those features
+
+<br/>
+
+--
+
+$$
+\mathbf{X} = 
+\begin{bmatrix}
+x\_{1,1} & \dots & x\_{1,N} \\\
+\vdots & \ddots & \vdots \\\
+x\_{M,1} & \dots & x\_{M,N}
+\end{bmatrix}
+$$
+<br/>
+$$
+\begin{aligned}
+x\_{i,j} &=\; j^{th} \text{feature value of the} \; i^{th} \text{observation} \\\
+N &= \text{number of features} \\\
+M &= \text{number of observations}
+\end{aligned}
+$$
+
+---
+
+## Vector spaces, inner & outer products
+
+- In this class we represent data in a vector space
+
+--
+
+    - This means data points lie on a grid($N=2$), in a cube($N=3$), or hypercube ($N\geq4$)
+
+--
+
+- A *point* in space is represented by a vector
+
+--
+
+    - $\text{vector:} \quad \mathbf{x} \in \mathbb{R}^N$
+--
+
+    - $\text{vector components} \quad x\_{i} \in \mathbb{R} \quad where \quad 0 \leq i < N $
+--
+
+    - $\text{in other words} \quad \mathbf{x} = [x\_0, \dots, x\_{N-1}]$ 
+--
+
+- *Inner* and *dot* product are used synonomously in this course
+
+--
+
+$$
+\left< \mathbf{a}, \mathbf{b} \right> = \mathbf{a} \cdot \mathbf{b} = \sum_{i=0}^{N-1} a\_i b\_i \quad where \quad \mathbf{a}, \mathbf{b} \in \mathbb{R}^N
+$$
+
+--
+
+- Outer product:
+
+$$
+\mathbf{a} \otimes \mathbf{b} = \mathbf{a} \mathbf{b}^T =
+\begin{bmatrix}
+a\_1 b\_1  & \dots & a\_1 b\_N  \\\
+\vdots & \ddots & \vdots \\\
+a\_M b\_1 & \dots & a\_M b\_N
+\end{bmatrix}
+$$
+
+---
+
+## Tensors
+
+- Formal definition: context dependent
+
+--
+
+- Definition in this course: A linear transformation within or between two vector spaces
+
+--
+
+- Example: 
+
+$$
+\mathbf{A}\mathbf{x} = 
+\begin{bmatrix}
+A\_{1,1}  & \dots & A\_{1,N}  \\\
+\vdots & \ddots & \vdots \\\
+A\_{N,1} & \dots & A\_{N,N}
+\end{bmatrix}
+\cdot
+\begin{bmatrix}
+x\_1 \\\
+\vdots \\\
+x\_N
+\end{bmatrix}
+= 
+\begin{bmatrix}
+\sum\_{i=1}^{N} A\_{1,i}x\_i \\\
+\vdots \\\
+\sum\_{i=1}^{N} A\_{N,i}x\_i
+\end{bmatrix}
+$$
+
+--
+
+- Formally: $\mathbf{A}\mathbf{B} = \sum\_{k=0}^{N-1}A\_{i,k}B\_{k,j}$
+
+--
+
+- Hadamard a.k.a. element wise a.k.a. Schur product: $\big( \mathbf{A} \odot \mathbf{B} \big) = A\_{i,j} B\_{i,j}$ 
+
+---
+
+## Vector and Tensor normalizes
+
+- Measure of the size, or magnitude of a vector or tensor
+
+--
+
+- Formally, the following criteria qualify $f(\cdot)$ as a norm:
+
+--
+
+    - Positive definiteness: $f(\mathbf{x}) = 0 \quad iff \quad \mathbf{x} = \mathbf{0}$
+--
+
+    - Triangle inequality: $ f(\mathbf{x} + \mathbf{y}) \leq f(\mathbf{x}) + f(\mathbf{y}) $
+--
+
+    - Homogeneity: $ \forall\_\alpha \in \mathbb{R}: \; f(\alpha \mathbf{x}) = |\alpha|f(\mathbf{x}) $
+--
+
+- The ones we care about are:
+
+--
+
+    - LP norm: $ ||\mathbf{X}||\_p = \bigg( \sum\_i | x\_i |^p \bigg)^{1/p} $
+--
+
+    - Frobenius norm: $ || \mathbf{A} ||\_p = \sqrt{\sum\_{i,j} A\_{i,j}^2} $
+
+---
+
+## Distance metrics
+
+- The two distance metrics we care about in this course are Manhattan (L1) and Euclidean (L2), which are special cases of the Lp norm:
+
+--
+
+    - Manhattan: $ || \mathbf{a} - \mathbf{b} ||\_1 = \sum\_i | a\_{i} - b\_{i}  | $
+--
+
+    - Euclidean: $ || \mathbf{a} - \mathbf{b} ||\_2 = \sqrt{ \sum\_i \big( a\_i - b\_i  \big)^2 } $
+
+---
+
+## Matrix rank
+
+- A *full rank* matrix, $ \mathbf{A} \in \mathbb{R}^{N \times N} $, is one which has $N$ linearly independent column vectors, and similarly, $N$ linearly independent row vectors.
+
+--
+
+- Some intuition behind why *rank* of a matrix is important:
+--
+
+    - Transforming all of the infinite vectors spanning $ \mathbb{R}^N $ with a full rank matrix, $A$, will result in a set of vectors that also span $ \mathbb{R}^N $. We therefore say that $\mathbf{A}$ spans $ \mathbb{R}^N $.
+--
+
+    - By extension, it also must be true that if $\mathbf{A}$ is full rank it is a unique mapping from $\mathbb{R}^N \rightarrow \mathbb{R}^N $, or in other words, $ \mathbf{A}\mathbf{x} = \mathbf{y}$ must have a unique solution, $\mathbf{x}$, for all $\mathbf{y} \in \mathbb{R}^N$.
+--
+
+    - Extending this further, any matrix with rank $\leq N$ must be a non-unique mapping from $\mathbb{R}^N \rightarrow \mathbb{R}^N $. Such matrices are referred to as *singular*.
+--
+
+
+- Quiz: find the rank of the following two matrices
+
+--
+
+$$
+\mathbf{A} =
+\begin{bmatrix}
+1 & 2 & 7 \\\
+0.5 & 5 & 15.5 \\\
+1 & 3 & 10
+\end{bmatrix}
+$$
+
+--
+
+$$
+\mathbf{B} =
+\begin{bmatrix}
+1 & 6 & 7 \\\
+0.5 & 5 & 15.5 \\\
+1 & 3 & 10
+\end{bmatrix}
+$$
+
+---
+
+## Eigendecomposition
+
+- Definition: $\mathbf{A}\mathbf{v} = \lambda \mathbf{v}$
+
+--
+
+- Applies to square matrices
+
+--
+
+- Matrix decomposition: $\mathbf{A} = \mathbf{Q} \mathbf{\Lambda} \mathbf{Q}^T $
+
+--
+
+$$
+where \quad
+\mathbf{Q} = 
+\begin{bmatrix}
+v\_1^{(1)} & \cdots & v\_1^{(N)} \\\
+\vdots & \vdots & \vdots \\\
+v\_N^{(1)} & \cdots & v\_N^{(N)}
+\end{bmatrix} 
+\quad and \quad 
+\mathbf{\Lambda} = 
+\begin{bmatrix}
+\lambda\_1 & \cdots & 0 \\\
+\vdots & \ddots & \vdots \\\
+0 & \cdots & \lambda\_N
+\end{bmatrix} 
+$$
+
+<br/>
+
+--
+
+<img src='content/eigen-decomposition.png'; class="center-content"; style="width:50%;"/>
+
+---
+
+## Singular value decomposition
+
+- What if our matrix is not square?
+
+--
+
+- The *singular value decomposition* (SVD) is a widely used matrix factorization technique used for non-square (and square) matrices. 
+
+--
+
+- Definition: $ \mathbf{A} = \mathbf{U} \mathbf{\Sigma} \mathbf{V}^T \in \mathbb{R}^{M \times N}$
+
+--
+
+$$
+\mathbf{U} = 
+\begin{bmatrix}
+u\_1^{(1)} & \cdots & u\_1^{(M)} \\\
+\vdots & \vdots & \vdots \\\
+u\_M^{(1)} & \cdots & u\_M^{(M)}
+\end{bmatrix}
+$$
+
+$$
+\mathbf{\Sigma} = 
+\begin{bmatrix}
+\sigma\_1 & \cdots & 0 \\\
+\vdots & \ddots & \vdots \\\
+0 & \cdots & \sigma\_N \\\
+\vdots & \vdots & \vdots \\\
+0 & 0 & 0
+\end{bmatrix}
+$$
+
+$$
+\mathbf{V}^T = 
+\begin{bmatrix}
+v\_1^{(1)} & \cdots & v\_N^{(1)} \\\
+\vdots & \vdots & \vdots \\\
+v\_1^{(N)} & \cdots & v\_N^{(N)}
+\end{bmatrix}
+$$
+
+Note: $M > N \; \text{case}$
+
+---
+class: center, middle
+
+# Math Refresher
+
+#### Probability Theory
+
+---
+
+## Random Variables (RVs)
+
+--
+
+- Examples: UV index, temperature, geographic coordinates, hair color, skin color, coin flip outcome, daily precipitation, Gross domestic product, a stock price etc.
+
+--
+
+- A random variable is some event for which we describe the space of outcomes as a probability distribution.
+
+--
+
+- A probability distribution is defined by: 
+
+    - Continuous RVs: The probability *density* associated with the RV assuming each of the real values over some (potentially infinite) contiguous interval. This is referred to as a *probability density function*, or PDF. A widely used function that describes the probability of many real-valued phenomena is the Gaussian distribution.
+--
+
+    - Discrete RVs: The probability *mass* associated with the RV assuming each of its discrete values. This is referred to as a *probability mass function*, or PMF. In this course we are primarily concerned with PMFs. A widely used function that describes the probability of events with binary outcomes is the Bernoulli distribution. 
+--
+
+- A PMF, $P(x)$, must be:
+
+    - Bounded: $\quad \forall\_x \in \text{X}: \; 0 \leq P(x) \leq 1 $
+
+    - Normalized: $\quad \sum\_{x \in \text{X}} P(x) = 1 $
+
+---
+
+## Gaussian distribution
+
+<br/>
+
+- Univariate: 
+
+$$
+N\big( x; \mu, \sigma^2 \big) = \frac{1}{\sqrt{2 \pi \sigma^2 }} \exp \bigg( \frac{ \big(x - \mu)^2}{2 \sigma^2}  \bigg) 
+$$
+
+- Multivariate
+
+$$
+N\big( \mathbf{x}; \boldsymbol{\mu}, \mathbf{\Sigma} \big) =
+\sqrt{\frac{1}{(2\pi)^N \det \mathbf{\Sigma} }} \exp \bigg(-\frac{1}{2}\big(\mathbf{x} - \boldsymbol{\mu}\big)^T \mathbf{\Sigma}^{-1}\big(\mathbf{x} - \boldsymbol{\mu} \big)  \bigg)
+$$
+$$
+where
+$$
+$$
+\mathbf{x} \in \mathbb{R}^N, \quad \mathbf{\Sigma} \in \mathbb{R}^{N \times N}
+$$
+
+---
+
+## Bernoulli distribution
+
+<br/>
+
+- Describes phonomena that have binary outcomes
+
+--
+
+- Probability mass function:
+
+$$
+P(y) = 
+\begin{cases}
+\theta & y = Y\_0 \\\
+1 - \theta & y = Y\_1
+\end{cases}
+$$
+
+$$
+\text{where}
+$$
+$$
+y \in Y
+$$
+
+$$
+Y=\\{Y\_0,Y\_1\\}
+$$
+
+$$
+0 \leq \theta \leq 1
+$$
+
+--
+
+- If we choose represent $y$ using $Y=\\{0,1\\}$ we can represent our Bernoulli PMF succinctly as:
+
+$$
+P(y) = \theta^y \big(1 - \theta)^{1 - y}
+$$
+
+---
+
+## Joint distributions
+
+--
+
+- Joint distribution
+
+$$
+P(x,y) \quad \text{where} \quad P(\cdot) \in \mathbb{R}^{|X| \times |Y|}
+$$
+
+--
+
+- Marginal distribution
+
+$$
+P(x) = \sum\_y P(x,y)
+$$
+
+--
+
+- Conditional distribution
+
+$$
+P(y|x) = \frac{p(x,y)}{p(x)}
+$$
+
+---
+
+## The product rule
+
+- The product rule is used extensively in statistical machine learning, primarily as a tool to help make parameter estimation a tractable problem in various settings.
+
+--
+
+- The product rule:
+
+$$
+P(x^{(1)}, \dots, x^{(n)}) = P(x^{(1)}) \prod\_{i=2}^N P(x^{(i)} | x^{(1)}, \dots, x^{(i-1)})
+$$
+
+---
+
+## Independence
+
+
+--
+
+- Independence condition:
+
+$$
+P(x,y) = P(x)P(y)
+$$
+
+--
+
+- Conditional independence condition:
+
+$$
+P(x,y | z) = P(x | z) P(y | z)
+$$
+
+---
+
+## Expected value and covariance functions
+
+--
+
+- Expectation 
+
+$$
+\mathbb{E}\_{x \sim P} \big[ f(x) \big] = \sum\_x P(x) f(x)
+$$
+
+--
+
+- Variance
+
+$$
+var \big[ f(x) \big] = \mathbb{E} \big[ f(x) - \mathbb{E} \big[ f(x) \big] \big]
+$$
+
+--
+
+- Covariance of two functions
+
+$$
+cov \big[ f\_1(x), f\_2(x) \big] = \mathbb{E} \bigg[ \Big( f\_1(x) - \mathbb{E} \big[ f\_1(x) \big] \Big) \Big( f\_2(x) - \mathbb{E} \big[ f\_2(x) \big]  \Big) \bigg]
+$$
+
+--
+
+- Covariance of a random vector $\mathbf{x}$
+
+$$
+cov \big[ \mathbf{x}, \mathbf{x} \big] = \mathbb{E} \bigg[ \Big( \mathbf{x} - \mathbb{E} \big[ \mathbf{x} \big] \Big) \Big( \mathbf{x} - \mathbb{E} \big[ \mathbf{x} \big]  \Big)^T \bigg]
+= \mathbb{E} \bigg[ \mathbf{x}\mathbf{x}^T - \mathbb{E}\big[\mathbf{x}\big]\mathbb{E}\big[\mathbf{x} \big]^T \bigg]
+$$
+
+---
+
+## Bayes' rule
+
+- Bayes' rule is equivalent to the product rule. Given two random variables, $x$ and $y$, their joint distribution can be factored in either of two ways:
+
+$$
+\begin{aligned}
+P(x, y) &= P(y|x) P(x) \\\
+&= P(x | y) P(y)
+\end{aligned}
+$$
+
+--
+
+- Consider the following description from a 1980s experiment: Linda is thirty-one years old, single, outspoken, and very bright. She majored in philosophy. As a student, she was deeply concerned with issues of discrimination and social justice, and also participated in antinuclear demonstrations.
+
+Which is more likely? Linda is a bank teller OR Linda is a bank teller who supports feminism.
+
+
+
+--
+
+- Bayes' Rule refers to the application of the product rule to statistical inference problems. For example, that of infering the most likely value of one variable, $y$, given an observation of another variable, $x$, and knowledge of the conditional, $P(y|x)$ (*likelihood*), and marginals $P(y)$ (*prior*) and $P(x)$ (*evidence*). The LHS of Bayes' Rule is referred to as the *posterior* distribution. 
+
+$$
+\begin{aligned}
+P(y|x) &= \frac{P(x|y)P(y)}{P(x)} \\\
+\text{Posterior} &= \frac{\text{Likelihood} \cdot \text{Prior} }{\text{Evidence}}
+\end{aligned}
+$$
+
+---
+
+## Information, entropy, and divergence
+
+- Shannon postulated that any measure of informativeness of an event should satisfy three conditions:
+
+--
+
+    - Any event with probability 1 yields no Information
+--
+
+    - The informativeness of an event varies inversely with its probability
+--
+
+    - The total information emitted from independent events is purely additive
+--
+
+- Shannon used these conditions to define two founding principles of information theory:
+
+    - Self-information: $I(x) = - \log P(x) $
+
+    - Shannon Entropy: $ H(P) = \mathbb{E}\_{x \sim P}\big[ I(x) \big] $
+
+--
+
+- Kullback-Leibler divergence: 
+
+$$ 
+D\_{KL}\big( P || Q \big) = \mathbb{E}\_{x \sim P} \bigg[ \log \frac{P(x)}{Q(x)} \bigg] 
+$$
+
+--
+
+- Cross Entropy: 
+
+$$ 
+\begin{aligned}
+H(P,Q) &= H(P) + D\_{K,L}(P || Q) \\\
+&= - \mathbb{E}\_{x \sim P} \big[ \log Q(x) \big] \\\
+&= - \sum\_{x \sim P} P(x) \log Q(x)
+\end{aligned}
+$$
+
+---
+
+
+## Maximum Likelihood Estimation
+
+- We want to somehow connect **data** that we observe with a **model** that we build 
+- Sometimes, we have information about the settings of the **model** and ask questions about **data** ("if I have a fair coin, what is the probability of observing 5 heads in a row")
+- Other times, we have **data** and we ask questions about the settings of the **model**, like ("does this model explain the data well")
+- In the second regime, our goal is to find model settings that best account for the observed data
+- If $X_1, \dots, X_n$ are IID random variables with density $f(X|\theta)$, then the likelihood function is the joint density over the dataset $D$:
+
+$$ L(\theta) = \prod_{i=1}^n f(X_i|\theta).$$
+
+- The objective is to find $\theta^\star$ so that $L(\theta)$ is maximized:
+
+$$\theta^\star =  \underset{\theta}{\mathrm{argmax}} \prod_{i=1}^{n} f(X_i|\theta).$$
+
+---
+## Maximum Likelihood Estimation
+
+
+- Equivalently, we can write
+
+$$\theta^\star = \underset{\theta}{\mathrm{argmax}} \sum_{i=1}^{n} \log f(X_i|\theta)$$
+
+or
+
+$$\theta^\star = - \underset{\theta}{\mathrm{argmin}} \sum_{i=1}^{n} \log f(X_i|\theta).$$ 
+
+---
+## Maximum Likelihood Estimation with Coin Flips
+
+- Imagine we're flipping a coin that lands on heads with probability $p$. Then, we can define $X$ to be the random variable with probabilities $P(X=1) = p$ and $P(X=0) = 1-p$.
+
+--
+- This is a Bernoulli distribution defined by $f(x; p) = p^x (1-p)^{1-x}$ with $x=0$ or $x=1$.
+
+--
+- Suppose $X_1, \dots, X_n$ are IID random variables from $\textrm{Bernoulli}(p)$.
+- What is the maximum likelihood estimator in this case?
+
+
+    </textarea>
+    <div class="footer"><p>Georgetown University | Fall 2024 | ANLY 5800 | Lecture 01</p></div>  
+    <script> var slideshow = remark.create(); </script>
+</body>
+  
+
+</html>
