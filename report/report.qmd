@@ -17,7 +17,7 @@ format:
 prefer-html: true
 ---
 
-<!-- quarto render report.qmd -->
+<!-- quarto render report.qmd --to pdf -->
 
 ## **Summary**
 
