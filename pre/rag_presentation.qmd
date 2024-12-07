@@ -13,73 +13,166 @@ format:
     css: styles.css
 ---
 
+# Introduction & System Overview
+Speaker: Peng Li
+
+:::{.notes}
+[1 min] Good afternoon, everyone. Today, we'll be presenting our project on the End-to-End Retrieval-Augmented Generation (RAG) System. This project was developed by Yuting Fan, Peng Li, and Yiwei Qi for the DSAN 5800 course. Our goal is to create a scalable, efficient, and user-friendly system that integrates document retrieval with AI-generated responses. I’ll start by introducing the project and system overview, while my teammates will walk you through implementation, evaluation, and results.
+:::
 
 ## Introduction
-- RAG Systems: Combine retrieval modules and generation modules for enhanced responses.  
-- Core Features:  
-  - Integrates FAISS for efficient document retrieval.  
-  - Uses OpenAI GPT for context-aware responses.  
+- **RAG Systems**: Combine retrieval modules and generation modules for enhanced responses.
+- **Why it matters**: Solves the issue of hallucination in generative AI by relying on factual document retrieval.
+- **Core Features**:  
+  - Integrates `FAISS` (Facebook AI Similarity Search) for efficient document retrieval.  
+  - Uses `OpenAI API` for context-aware responses.  
   - Dynamic knowledge base updates.  
 
-::: {.notes}
-Speaker notes go here.
+:::{.notes}
+[1 min] So, what is a RAG system? It stands for Retrieval-Augmented Generation. Unlike standard AI models that generate answers from internal knowledge, a RAG system retrieves relevant context from a document database and uses that context to produce accurate, fact-based responses. This makes it highly reliable and reduces hallucinations often seen in AI models. Our system supports dynamic document uploads, retrieval via FAISS, and generation using OpenAI's GPT models.
 :::
 
 ---
 
 ## System Goals
 - Build a scalable, automated end-to-end RAG system.  
-- Enhance:  
-  - Retrieval efficiency (FAISS).  
-  - Answer accuracy (GPT-based).  
-  - Dynamic knowledge base adaptability.  
+- To achieve:  
+  - High Retrieval Efficiency (via `FAISS`).
+  - Accurate AI Responses (via `GPT`).
+  - Dynamic Knowledge Base Adaptability (with user uploads).
 - Embed source information for transparency.  
+
+:::{.notes}
+[1 min] Our main goal was to develop a system that automates the process of query handling, document retrieval, and AI-based response generation. By using FAISS for retrieval and OpenAI's GPT for language generation, we achieved a fast, flexible, and transparent system. Additionally, we ensured that users can upload their own documents to expand the system’s knowledge base.
+:::
 
 ---
 
 ## System Architecture
 1. Document Retrieval Module  
-   - FAISS for dense vector indexing and retrieval.  
-   - Hugging Face’s SentenceTransformers for embedding.  
+   - `FAISS` for dense vector indexing and retrieval.  
+   - 🤗 Hugging Face’s `SentenceTransformers` for embedding.  
 2. Language Generation Module  
-   - OpenAI GPT models (e.g., GPT-3.5, GPT-4).  
-   - Contextual input creation from retrieved data.  
+   - OpenAI `GPT` models (GPT-3.5, GPT-4).  
+   - Contextual input creation from retrieved data.
+
+:::{.notes}
+[1 min] Here’s the overall system architecture. It consists of three main modules: document retrieval, language generation, and user interface.
+:::
+
+## System Architecture
 3. User Interface  
-   - Built with Streamlit for interaction.  
-   - Features: document upload, API key input, model selection.  
+   - Built with `Streamlit` for interaction.  
+   - Features: document upload, API key input, model selection.
 
----
-
-## Data Flow
+### Data Flow
 1. User Query $\rightarrow$ Vector Embedding  
-2. FAISS Retrieval $\rightarrow$ Relevant Document Fragments  
-3. GPT Integration $\rightarrow$ Contextual Response Generation  
-4. Streamlit UI $\rightarrow$ Displays Response and Sources  
+2. `FAISS` Retrieval $\rightarrow$ Relevant Document Fragments  
+3. `GPT` Integration $\rightarrow$ Contextual Response Generation  
+4. `Streamlit` UI $\rightarrow$ Displays Response and Sources
+
+:::{.notes}
+[1 min] The process starts with a user query, which is converted into an embedding. The FAISS retriever searches for related documents, and those are combined with the query to generate a response using GPT. The answer is presented to the user in a simple interface built with Streamlit.
+:::
+
+# Implementation & Key Features {data-name='Implementation'}
+Speaker: Yuting Fan
+
+## Implementation Details {auto-animate="true"}
+### Document Retrieval
+- Uses `FAISS` for dense vector-based search.
+- Embedding creation via `all-MiniLM-L6-v2` (Hugging Face's SentenceTransformers).
+- Uses re-ranking with CrossEncoder to prioritize results.
+
+```python
+def build_index(self, documents):
+    """Build a FAISS index for the given documents."""
+    self.documents = documents
+    embeddings = self.model.encode(documents, show_progress_bar=True)
+    self.index = faiss.IndexFlatL2(embeddings.shape[1])
+    self.index.add(embeddings)
+```
+
+:::{.notes}
+[1 min] Now let’s look at the system's core technical implementation. For retrieval, we use FAISS, a vector search tool, combined with Hugging Face's SentenceTransformers to create semantic embeddings.
+:::
+---
+
+## Implementation Details {auto-animate="true"}
+### Language Generation
+- Supports user selection of GPT-3.5 or GPT-4.
+- Merges user queries with retrieved document content as context.
+
+```python
+def generate_response(self, query, model_name="gpt-3.5-turbo", k=5):
+        """Generate a response by combining retrieval and generation."""
+        if not openai.api_key:
+            raise ValueError("API key is not set. Please enter your OpenAI API key.")
+        
+        retrieved_docs = self.retriever.retrieve(query, k)
+        reranked_docs = self.retriever.rerank(query, retrieved_docs)
+        context = "\n".join([f"{i+1}. {doc}" for i, (doc, _) in enumerate(reranked_docs)])
+        prompt = (
+            f"Contextual documents:\n{context}\n\n"
+            f"Query: {query}\n"
+            f"Response:"
+        )
+        response = openai.ChatCompletion.create(
+            model=model_name, # change model based on user selection
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1000
+        )
+        return response['choices'][0]['message']['content'].strip(), reranked_docs
+```
+
+:::{.notes}
+[1 min] For generation, we use OpenAI's GPT models, with users having the option to select GPT-3.5 or GPT-4. The user input is combined with document content to generate accurate and relevant responses.
+:::
 
 ---
 
-## Implementation Details
-### Document Retrieval  
-- Tools: FAISS + SentenceTransformers  
-- Techniques:  
-  - Embedding queries and documents using `all-MiniLM-L6-v2`.  
-  - Re-ranking with CrossEncoder models for precision.  
+## User Interface
+
+![](images/UI.png){fig-align="center" width="1000"}
+
+[Contextual Retrieval Augmented Generation (RAG) System](https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app)
+
+:::{.notes}
+[1 min] We’ve also made the system easy to use. The user interface is built with Streamlit, allowing users to upload custom documents and select which GPT model they want to use. This allows for real-time responses and makes it easy to expand the knowledge base on demand.
+
+[*Give a demo about how to use the system*]
+:::
 
 ---
 
-## Implementation Details
-### Generation Module  
-- User-selected GPT models (e.g., GPT-3.5, GPT-4).  
-- Optimized parameters:  
-  - Temperature: 0.7  
-  - Token limits to control output length.  
+## System Features
 
----
+- Real-time Document Upload: Users can update the knowledge base on the fly.
+- Multiple GPT Models: Choose between GPT-3.5 and GPT-4 for generation.
+- Retrieval Transparency: Source of retrieved data is embedded in responses.
+
+```md
+- For abolishing the free System of English Laws in a neighbouring Province, establishing therein an Arbitrary government, and enlarging its Boundaries so as to render it at once an example and fit instrument for introducing the same absolute rule into these Colonies:
+  - (Score: -9.223430633544922)
+- For suspending our own Legislatures, and declaring themselves invested with power to legislate for us in all cases whatsoever.
+  - (Score: -10.269696235656738)
+- For depriving us in many cases, of the benefits of Trial by Jury:
+  - (Score: -11.189470291137695)
+```
+
+:::{.notes}
+[2 min] Some key features of our system include real-time document uploads, support for multiple GPT models, and transparency. The system displays which document it retrieved information from, providing credibility and context for users.
+:::
+
+# Evaluation, Results & Conclusion
+Speaker: Yiwei Qi
 
 ## Evaluation
 ### Key Tests Conducted  
-1. File Type Support:  
-   - Supports PDF, PNG, HTML, TSV, JPG.  
+1. File Type Support: *PDF*, *DOCX*, *TXT*.  
 2. File Size:  
    - Handles small files efficiently.  
    - Large files (>100MB) processed in segments.  
@@ -89,37 +182,42 @@ Speaker notes go here.
 
 ## Evaluation
 ### Key Tests Conducted 
-3. Invalid Content:  
-   - Handles empty or garbled files with appropriate feedback.  
-4. Query Robustness:  
-   - Stability with invalid or empty queries.  
+3. Invalid Content: Handles empty or garbled files with appropriate feedback.  
+4. Query Robustness: Handles random or malformed queries gracefully.
+
+![](images/invalid_files.png){fig-align="center"}
+
+:::{.notes}
+[2 min] To ensure system reliability, we tested file support, query handling, and performance. It can handle most file types like PDF and plain text. It performs well with large files up to 100MB, but files over 1GB require optimization. The system also handles garbled files and malformed queries with clear user feedback.
+:::
 
 ---
 
 ## Performance Analysis
 ### GPT-3.5 vs. GPT-4  
-| Criterion     | GPT-4       | GPT-3.5     |
+| **Criterion**     | GPT-4       | GPT-3.5     |
 |-------------------|-----------------|-----------------|
-| Accuracy       | Higher          | Lower           |
-| Context Relevance | Stronger Context Understanding | Generalized Responses |
-| Detail Quality  | More detailed   | Less specific   |
+| **Accuracy**       | Higher          | Lower           |
+| **Context Relevance** | Stronger Context Understanding | Generalized Responses |
+| **Detail Quality**  | More detailed   | Less specific   |
+
+:::{.notes}
+[1 min] We compared GPT-3.5 and GPT-4. Unsurprisingly, GPT-4 performs better, especially with complex queries. It produces more accurate, relevant, and logically coherent responses.
+:::
 
 ---
 
 ## Conclusion
 - Successfully implemented a dynamic, scalable RAG system.  
-- Strengths:  
+- Key Takeaways:  
   - Efficient retrieval, accurate generation.  
   - Transparency with source embedding.  
 - Future Scope:  
   - Support for multi-modal data (images, audio, video).  
-  - Fine-tuning GPT for specific domains.  
+  - Fine-tuning GPT for specific domains.
 
----
-
-## Appendix
-- GitHub Repository: <br> [github.com/pengleee/Project-5800-RAG-2024Fall](https://github.com/pengleee/Project-5800-RAG-2024Fall)
-- Knowledge Base: User-uploaded documents.  
-- Evaluation Dataset: User queries.
+:::{.notes}
+[2 min] In summary, we developed a functional and scalable RAG system. In the future, we hope to expand to multi-modal data and fine-tune GPT models for specialized fields like healthcare.
+:::
 
 # Thank you!

@@ -30,6 +30,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="rag_presentation_files/libs/revealjs/dist/theme/quarto.css">
   <link rel="stylesheet" href="styles.css">
@@ -342,22 +407,40 @@ Yuting Fan, Peng Li, Yiwei Qi
 
   <p class="date">2024-12-10</p>
 </section>
+<section>
+<section id="introduction-system-overview" class="title-slide slide level1 center">
+<h1>Introduction &amp; System Overview</h1>
+<p>Speaker: Peng Li</p>
+<aside class="notes">
+<p>[1 min] Good afternoon, everyone. Today, we’ll be presenting our project on the End-to-End Retrieval-Augmented Generation (RAG) System. This project was developed by Yuting Fan, Peng Li, and Yiwei Qi for the DSAN 5800 course. Our goal is to create a scalable, efficient, and user-friendly system that integrates document retrieval with AI-generated responses. I’ll start by introducing the project and system overview, while my teammates will walk you through implementation, evaluation, and results.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
 <ul>
-<li>RAG Systems: Combine retrieval modules and generation modules for enhanced responses.<br>
-</li>
-<li>Core Features:
+<li><strong>RAG Systems</strong>: Combine retrieval modules and generation modules for enhanced responses.</li>
+<li><strong>Why it matters</strong>: Solves the issue of hallucination in generative AI by relying on factual document retrieval.</li>
+<li><strong>Core Features</strong>:
 <ul>
-<li>Integrates FAISS for efficient document retrieval.<br>
+<li>Integrates <code>FAISS</code> (Facebook AI Similarity Search) for efficient document retrieval.<br>
 </li>
-<li>Uses OpenAI GPT for context-aware responses.<br>
+<li>Uses <code>OpenAI API</code> for context-aware responses.<br>
 </li>
 <li>Dynamic knowledge base updates.</li>
 </ul></li>
 </ul>
 <aside class="notes">
-<p>Speaker notes go here.</p>
+<p>[1 min] So, what is a RAG system? It stands for Retrieval-Augmented Generation. Unlike standard AI models that generate answers from internal knowledge, a RAG system retrieves relevant context from a document database and uses that context to produce accurate, fact-based responses. This makes it highly reliable and reduces hallucinations often seen in AI models. Our system supports dynamic document uploads, retrieval via FAISS, and generation using OpenAI’s GPT models.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -375,92 +458,225 @@ Yuting Fan, Peng Li, Yiwei Qi
 <ul>
 <li>Build a scalable, automated end-to-end RAG system.<br>
 </li>
-<li>Enhance:
+<li>To achieve:
 <ul>
-<li>Retrieval efficiency (FAISS).<br>
-</li>
-<li>Answer accuracy (GPT-based).<br>
-</li>
-<li>Dynamic knowledge base adaptability.<br>
-</li>
+<li>High Retrieval Efficiency (via <code>FAISS</code>).</li>
+<li>Accurate AI Responses (via <code>GPT</code>).</li>
+<li>Dynamic Knowledge Base Adaptability (with user uploads).</li>
 </ul></li>
 <li>Embed source information for transparency.</li>
 </ul>
+<aside class="notes">
+<p>[1 min] Our main goal was to develop a system that automates the process of query handling, document retrieval, and AI-based response generation. By using FAISS for retrieval and OpenAI’s GPT for language generation, we achieved a fast, flexible, and transparent system. Additionally, we ensured that users can upload their own documents to expand the system’s knowledge base.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="system-architecture" class="slide level2">
 <h2>System Architecture</h2>
 <ol type="1">
 <li>Document Retrieval Module
 <ul>
-<li>FAISS for dense vector indexing and retrieval.<br>
+<li><code>FAISS</code> for dense vector indexing and retrieval.<br>
 </li>
-<li>Hugging Face’s SentenceTransformers for embedding.<br>
+<li>🤗 Hugging Face’s <code>SentenceTransformers</code> for embedding.<br>
 </li>
 </ul></li>
 <li>Language Generation Module
 <ul>
-<li>OpenAI GPT models (e.g., GPT-3.5, GPT-4).<br>
+<li>OpenAI <code>GPT</code> models (GPT-3.5, GPT-4).<br>
 </li>
-<li>Contextual input creation from retrieved data.<br>
-</li>
+<li>Contextual input creation from retrieved data.</li>
 </ul></li>
+</ol>
+<aside class="notes">
+<p>[1 min] Here’s the overall system architecture. It consists of three main modules: document retrieval, language generation, and user interface.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="system-architecture-1" class="slide level2">
+<h2>System Architecture</h2>
+<ol start="3" type="1">
 <li>User Interface
 <ul>
-<li>Built with Streamlit for interaction.<br>
+<li>Built with <code>Streamlit</code> for interaction.<br>
 </li>
 <li>Features: document upload, API key input, model selection.</li>
 </ul></li>
 </ol>
-</section>
-<section id="data-flow" class="slide level2">
-<h2>Data Flow</h2>
+<h3 id="data-flow">Data Flow</h3>
 <ol type="1">
 <li>User Query <span class="math inline">\(\rightarrow\)</span> Vector Embedding<br>
 </li>
-<li>FAISS Retrieval <span class="math inline">\(\rightarrow\)</span> Relevant Document Fragments<br>
+<li><code>FAISS</code> Retrieval <span class="math inline">\(\rightarrow\)</span> Relevant Document Fragments<br>
 </li>
-<li>GPT Integration <span class="math inline">\(\rightarrow\)</span> Contextual Response Generation<br>
+<li><code>GPT</code> Integration <span class="math inline">\(\rightarrow\)</span> Contextual Response Generation<br>
 </li>
-<li>Streamlit UI <span class="math inline">\(\rightarrow\)</span> Displays Response and Sources</li>
+<li><code>Streamlit</code> UI <span class="math inline">\(\rightarrow\)</span> Displays Response and Sources</li>
 </ol>
+<aside class="notes">
+<p>[1 min] The process starts with a user query, which is converted into an embedding. The FAISS retriever searches for related documents, and those are combined with the query to generate a response using GPT. The answer is presented to the user in a simple interface built with Streamlit.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="implementation-key-features" class="title-slide slide level1 center" data-name="Implementation">
+<h1>Implementation &amp; Key Features</h1>
+<p>Speaker: Yuting Fan</p>
 </section>
-<section id="implementation-details" class="slide level2">
-<h2>Implementation Details</h2>
+<section id="implementation-details" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Implementation Details</h2>
 <h3 id="document-retrieval">Document Retrieval</h3>
 <ul>
-<li>Tools: FAISS + SentenceTransformers<br>
-</li>
-<li>Techniques:
-<ul>
-<li>Embedding queries and documents using <code>all-MiniLM-L6-v2</code>.<br>
-</li>
-<li>Re-ranking with CrossEncoder models for precision.</li>
-</ul></li>
+<li>Uses <code>FAISS</code> for dense vector-based search.</li>
+<li>Embedding creation via <code>all-MiniLM-L6-v2</code> (Hugging Face’s SentenceTransformers).</li>
+<li>Uses re-ranking with CrossEncoder to prioritize results.</li>
 </ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb1-1" class="hljs-ln-code"><a href=""></a><span class="kw">def</span> build_index(<span class="va">self</span>, documents):</span>
+<span id="cb1-2" class="hljs-ln-code"><a href=""></a>    <span class="co">"""Build a FAISS index for the given documents."""</span></span>
+<span id="cb1-3" class="hljs-ln-code"><a href=""></a>    <span class="va">self</span>.documents <span class="op">=</span> documents</span>
+<span id="cb1-4" class="hljs-ln-code"><a href=""></a>    embeddings <span class="op">=</span> <span class="va">self</span>.model.encode(documents, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-5" class="hljs-ln-code"><a href=""></a>    <span class="va">self</span>.index <span class="op">=</span> faiss.IndexFlatL2(embeddings.shape[<span class="dv">1</span>])</span>
+<span id="cb1-6" class="hljs-ln-code"><a href=""></a>    <span class="va">self</span>.index.add(embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<aside class="notes">
+<p>[1 min] Now let’s look at the system’s core technical implementation. For retrieval, we use FAISS, a vector search tool, combined with Hugging Face’s SentenceTransformers to create semantic embeddings.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section id="implementation-details-1" class="slide level2">
-<h2>Implementation Details</h2>
-<h3 id="generation-module">Generation Module</h3>
+<section id="implementation-details-1" class="slide level2" data-auto-animate="true">
+<h2 data-id="quarto-animate-title">Implementation Details</h2>
+<h3 id="language-generation">Language Generation</h3>
 <ul>
-<li>User-selected GPT models (e.g., GPT-3.5, GPT-4).<br>
-</li>
-<li>Optimized parameters:
-<ul>
-<li>Temperature: 0.7<br>
-</li>
-<li>Token limits to control output length.</li>
-</ul></li>
+<li>Supports user selection of GPT-3.5 or GPT-4.</li>
+<li>Merges user queries with retrieved document content as context.</li>
 </ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb2-1" class="hljs-ln-code"><a href=""></a><span class="kw">def</span> generate_response(<span class="va">self</span>, query, model_name<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>, k<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb2-2" class="hljs-ln-code"><a href=""></a>        <span class="co">"""Generate a response by combining retrieval and generation."""</span></span>
+<span id="cb2-3" class="hljs-ln-code"><a href=""></a>        <span class="cf">if</span> <span class="kw">not</span> openai.api_key:</span>
+<span id="cb2-4" class="hljs-ln-code"><a href=""></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"API key is not set. Please enter your OpenAI API key."</span>)</span>
+<span id="cb2-5" class="hljs-ln-code"><a href=""></a>        </span>
+<span id="cb2-6" class="hljs-ln-code"><a href=""></a>        retrieved_docs <span class="op">=</span> <span class="va">self</span>.retriever.retrieve(query, k)</span>
+<span id="cb2-7" class="hljs-ln-code"><a href=""></a>        reranked_docs <span class="op">=</span> <span class="va">self</span>.retriever.rerank(query, retrieved_docs)</span>
+<span id="cb2-8" class="hljs-ln-code"><a href=""></a>        context <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([<span class="ss">f"</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>doc<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i, (doc, _) <span class="kw">in</span> <span class="bu">enumerate</span>(reranked_docs)])</span>
+<span id="cb2-9" class="hljs-ln-code"><a href=""></a>        prompt <span class="op">=</span> (</span>
+<span id="cb2-10" class="hljs-ln-code"><a href=""></a>            <span class="ss">f"Contextual documents:</span><span class="ch">\n</span><span class="sc">{</span>context<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb2-11" class="hljs-ln-code"><a href=""></a>            <span class="ss">f"Query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb2-12" class="hljs-ln-code"><a href=""></a>            <span class="ss">f"Response:"</span></span>
+<span id="cb2-13" class="hljs-ln-code"><a href=""></a>        )</span>
+<span id="cb2-14" class="hljs-ln-code"><a href=""></a>        response <span class="op">=</span> openai.ChatCompletion.create(</span>
+<span id="cb2-15" class="hljs-ln-code"><a href=""></a>            model<span class="op">=</span>model_name, <span class="co"># change model based on user selection</span></span>
+<span id="cb2-16" class="hljs-ln-code"><a href=""></a>            messages<span class="op">=</span>[</span>
+<span id="cb2-17" class="hljs-ln-code"><a href=""></a>                {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You are a helpful assistant."</span>},</span>
+<span id="cb2-18" class="hljs-ln-code"><a href=""></a>                {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}</span>
+<span id="cb2-19" class="hljs-ln-code"><a href=""></a>            ],</span>
+<span id="cb2-20" class="hljs-ln-code"><a href=""></a>            max_tokens<span class="op">=</span><span class="dv">1000</span></span>
+<span id="cb2-21" class="hljs-ln-code"><a href=""></a>        )</span>
+<span id="cb2-22" class="hljs-ln-code"><a href=""></a>        <span class="cf">return</span> response[<span class="st">'choices'</span>][<span class="dv">0</span>][<span class="st">'message'</span>][<span class="st">'content'</span>].strip(), reranked_docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<aside class="notes">
+<p>[1 min] For generation, we use OpenAI’s GPT models, with users having the option to select GPT-3.5 or GPT-4. The user input is combined with document content to generate accurate and relevant responses.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="user-interface" class="slide level2">
+<h2>User Interface</h2>
+
+<img data-src="images/UI.png" class="quarto-figure quarto-figure-center r-stretch" width="1000"><p><a href="https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app">Contextual Retrieval Augmented Generation (RAG) System</a></p>
+<aside class="notes">
+<p>[1 min] We’ve also made the system easy to use. The user interface is built with Streamlit, allowing users to upload custom documents and select which GPT model they want to use. This allows for real-time responses and makes it easy to expand the knowledge base on demand.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="system-features" class="slide level2">
+<h2>System Features</h2>
+<ul>
+<li>Real-time Document Upload: Users can update the knowledge base on the fly.</li>
+<li>Multiple GPT Models: Choose between GPT-3.5 and GPT-4 for generation.</li>
+<li>Retrieval Transparency: Source of retrieved data is embedded in responses.</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource md number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href=""></a><span class="ss">- </span>For abolishing the free System of English Laws in a neighbouring Province, establishing therein an Arbitrary government, and enlarging its Boundaries so as to render it at once an example and fit instrument for introducing the same absolute rule into these Colonies:</span>
+<span id="cb3-2"><a href=""></a><span class="ss">  - </span>(Score: -9.223430633544922)</span>
+<span id="cb3-3"><a href=""></a><span class="ss">- </span>For suspending our own Legislatures, and declaring themselves invested with power to legislate for us in all cases whatsoever.</span>
+<span id="cb3-4"><a href=""></a><span class="ss">  - </span>(Score: -10.269696235656738)</span>
+<span id="cb3-5"><a href=""></a><span class="ss">- </span>For depriving us in many cases, of the benefits of Trial by Jury:</span>
+<span id="cb3-6"><a href=""></a><span class="ss">  - </span>(Score: -11.189470291137695)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<aside class="notes">
+<p>[2 min] Some key features of our system include real-time document uploads, support for multiple GPT models, and transparency. The system displays which document it retrieved information from, providing credibility and context for users.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="evaluation-results-conclusion" class="title-slide slide level1 center">
+<h1>Evaluation, Results &amp; Conclusion</h1>
+<p>Speaker: Yiwei Qi</p>
 </section>
 <section id="evaluation" class="slide level2">
 <h2>Evaluation</h2>
 <h3 id="key-tests-conducted">Key Tests Conducted</h3>
 <ol type="1">
-<li>File Type Support:
-<ul>
-<li>Supports PDF, PNG, HTML, TSV, JPG.<br>
+<li>File Type Support: <em>PDF</em>, <em>DOCX</em>, <em>TXT</em>.<br>
 </li>
-</ul></li>
 <li>File Size:
 <ul>
 <li>Handles small files efficiently.<br>
@@ -475,16 +691,24 @@ Yuting Fan, Peng Li, Yiwei Qi
 <h2>Evaluation</h2>
 <h3 id="key-tests-conducted-1">Key Tests Conducted</h3>
 <ol start="3" type="1">
-<li>Invalid Content:
-<ul>
-<li>Handles empty or garbled files with appropriate feedback.<br>
+<li>Invalid Content: Handles empty or garbled files with appropriate feedback.<br>
 </li>
-</ul></li>
-<li>Query Robustness:
-<ul>
-<li>Stability with invalid or empty queries.</li>
-</ul></li>
+<li>Query Robustness: Handles random or malformed queries gracefully.</li>
 </ol>
+
+<img data-src="images/invalid_files.png" class="quarto-figure quarto-figure-center r-stretch"><aside class="notes">
+<p>[2 min] To ensure system reliability, we tested file support, query handling, and performance. It can handle most file types like PDF and plain text. It performs well with large files up to 100MB, but files over 1GB require optimization. The system also handles garbled files and malformed queries with clear user feedback.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="performance-analysis" class="slide level2">
 <h2>Performance Analysis</h2>
@@ -497,36 +721,49 @@ Yuting Fan, Peng Li, Yiwei Qi
 </colgroup>
 <thead>
 <tr class="header">
-<th>Criterion</th>
+<th><strong>Criterion</strong></th>
 <th>GPT-4</th>
 <th>GPT-3.5</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Accuracy</td>
+<td><strong>Accuracy</strong></td>
 <td>Higher</td>
 <td>Lower</td>
 </tr>
 <tr class="even">
-<td>Context Relevance</td>
+<td><strong>Context Relevance</strong></td>
 <td>Stronger Context Understanding</td>
 <td>Generalized Responses</td>
 </tr>
 <tr class="odd">
-<td>Detail Quality</td>
+<td><strong>Detail Quality</strong></td>
 <td>More detailed</td>
 <td>Less specific</td>
 </tr>
 </tbody>
 </table>
+<aside class="notes">
+<p>[1 min] We compared GPT-3.5 and GPT-4. Unsurprisingly, GPT-4 performs better, especially with complex queries. It produces more accurate, relevant, and logically coherent responses.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="conclusion" class="slide level2">
 <h2>Conclusion</h2>
 <ul>
 <li>Successfully implemented a dynamic, scalable RAG system.<br>
 </li>
-<li>Strengths:
+<li>Key Takeaways:
 <ul>
 <li>Efficient retrieval, accurate generation.<br>
 </li>
@@ -540,16 +777,20 @@ Yuting Fan, Peng Li, Yiwei Qi
 <li>Fine-tuning GPT for specific domains.</li>
 </ul></li>
 </ul>
-</section>
-<section id="appendix" class="slide level2">
-<h2>Appendix</h2>
-<ul>
-<li>GitHub Repository: <br> <a href="https://github.com/pengleee/Project-5800-RAG-2024Fall">github.com/pengleee/Project-5800-RAG-2024Fall</a></li>
-<li>Knowledge Base: User-uploaded documents.<br>
-</li>
-<li>Evaluation Dataset: User queries.</li>
-</ul>
-</section>
+<aside class="notes">
+<p>[2 min] In summary, we developed a functional and scalable RAG system. In the future, we hope to expand to multi-modal data and fine-tune GPT models for specialized fields like healthcare.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
 <section id="thank-you" class="title-slide slide level1 center">
 <h1>Thank you!</h1>
 <div class="quarto-auto-generated-content">

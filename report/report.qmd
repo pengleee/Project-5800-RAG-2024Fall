@@ -21,7 +21,7 @@ prefer-html: true
 
 ## **Summary**
 
-The project developed an end-to-end retrieval Enhanced generation (RAG) system that combines FAISs-based document retrieval and Open AI for accurate context-aware question-and-answer. The system supports dynamic knowledge base extension and allows users to enter OpenAI API keys and select models through the Streamlit interface for increased flexibility and personalization. The evaluation results show that the retrieval efficiency is high, the precision is high, and the response is accurate and smooth, which highlights the potential of the system in education, research and other fields.
+The project developed an end-to-end retrieval Enhanced generation (RAG) system that combines FAISS-based document retrieval and OpenAI for accurate context-aware question-and-answer. The system supports dynamic knowledge base extension and allows users to enter OpenAI API keys and select models through the Streamlit interface for increased flexibility and personalization. The evaluation results show that the retrieval efficiency is high, the precision is high, and the response is accurate and smooth, which highlights the potential of the system in education, research and other fields.
 
 ## **1. Introduction**
 
