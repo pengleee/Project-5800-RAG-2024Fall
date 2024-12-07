@@ -13,12 +13,17 @@ format:
     css: styles.css
 ---
 
+
 ## Introduction
 - RAG Systems: Combine retrieval modules and generation modules for enhanced responses.  
 - Core Features:  
   - Integrates FAISS for efficient document retrieval.  
   - Uses OpenAI GPT for context-aware responses.  
   - Dynamic knowledge base updates.  
+
+::: {.notes}
+Speaker notes go here.
+:::
 
 ---
 

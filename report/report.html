@@ -3075,7 +3075,7 @@ vertical-align: -.125em;
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><strong>5. Conclusion</strong></a></li>
   <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix"><strong>6. Appendix</strong></a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="../report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -3113,7 +3113,7 @@ vertical-align: -.125em;
 </header>
 
 
-<!-- quarto render report.qmd -->
+<!-- quarto render report.qmd --to pdf -->
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary"><strong>Summary</strong></h2>
 <p>The project developed an end-to-end retrieval Enhanced generation (RAG) system that combines FAISs-based document retrieval and Open AI for accurate context-aware question-and-answer. The system supports dynamic knowledge base extension and allows users to enter OpenAI API keys and select models through the Streamlit interface for increased flexibility and personalization. The evaluation results show that the retrieval efficiency is high, the precision is high, and the response is accurate and smooth, which highlights the potential of the system in education, research and other fields.</p>
@@ -3163,7 +3163,7 @@ vertical-align: -.125em;
 <p>To verify the stability and compatibility of the end-to-end Search Enhanced Generation (RAG) system we built, we conducted comprehensive tests on file support, file size, file format, and query validity. These tests are designed to verify the compatibility of the system with different file types to ensure the wide applicability of the document upload function. At the same time, test and analyze the performance and efficiency of the system when processing files of different sizes, especially the ability to support large files, and evaluate the robustness of the system when processing invalid file contents and invalid queries, so as to ensure that the system can run stably and provide clear feedback when the user enters errors or irregularities.</p>
 <section id="file-type-test" class="level3">
 <h3 class="anchored" data-anchor-id="file-type-test">4.1 File Type Test</h3>
-<p>We tested the mainstream file types supported by the project (e.g. PDF, PNG, HTML, TSV, JPG, etc.) to verify file upload capabilities and system compatibility. Specifically, we simulate the user, using the front-end page as the entry point, using the ‘upload_document’ method in the project code ‘rag_app_new.py’ to handle the file upload, and calling the FAISS retrieval through the backend to generate the embed. The SentenceTransformers model is used to parse the text content. Among the supported file types, PDF (such as’ lecture-07a-notes.pdf ‘) can successfully extract text and generate embeddings, and the preprocessing module effectively removes redundant characters from complex typesetting. However, for binary files (such as’.dmg ‘and’.pkg ‘), TSV files (such as’ metadata.tsv ‘), Jupyter Notebook files (such as’ word2vec-demo.ipynb ’), the system cannot process, This is because such files do not contain parsable natural language text, and there is no dedicated processing logic for binaries implemented in the project code. This shows that the system has good support for text files, but there are limitations in binary file processing.</p>
+<p>We tested the mainstream file types supported by the project (e.g. PDF, PNG, HTML, TSV, JPG, etc.) to verify file upload capabilities and system compatibility. Specifically, we simulate the user, using the front-end page as the entry point, using the ‘upload_document’ method in the project code ‘rag_app_new.py’ to handle the file upload, and calling the FAISS retrieval through the backend to generate the embed. The SentenceTransformers model is used to parse the text content. Among the supported file types, PDF (such as’lecture-07a-notes.pdf’) can successfully extract text and generate embeddings, and the preprocessing module effectively removes redundant characters from complex typesetting. However, for binary files (such as’.dmg’ and ‘.pkg’), TSV files (such as ‘metadata.tsv’), Jupyter Notebook files (such as ‘word2vec-demo.ipynb’), the system cannot process, This is because such files do not contain parsable natural language text, and there is no dedicated processing logic for binaries implemented in the project code. This shows that the system has good support for text files, but there are limitations in binary file processing.</p>
 </section>
 <section id="file-size-test" class="level3">
 <h3 class="anchored" data-anchor-id="file-size-test">4.2 File Size Test</h3>
