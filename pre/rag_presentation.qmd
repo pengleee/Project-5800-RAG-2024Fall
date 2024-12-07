@@ -1,0 +1,120 @@
+---
+title: "End-to-End Retrieval-Augmented Generation (RAG) System"
+author: "Yuting Fan, Peng Li, Yiwei Qi"
+date: "December 10, 2024"
+format:
+  revealjs:
+    footer: "DSAN5800 Project: RAG System"
+    slide-number: true
+    chalkboard: 
+      buttons: false
+    preview-links: auto
+    # logo: images/gu_logo.png
+    css: styles.css
+---
+
+## Introduction
+- RAG Systems: Combine retrieval modules and generation modules for enhanced responses.  
+- Core Features:  
+  - Integrates FAISS for efficient document retrieval.  
+  - Uses OpenAI GPT for context-aware responses.  
+  - Dynamic knowledge base updates.  
+
+---
+
+## System Goals
+- Build a scalable, automated end-to-end RAG system.  
+- Enhance:  
+  - Retrieval efficiency (FAISS).  
+  - Answer accuracy (GPT-based).  
+  - Dynamic knowledge base adaptability.  
+- Embed source information for transparency.  
+
+---
+
+## System Architecture
+1. Document Retrieval Module  
+   - FAISS for dense vector indexing and retrieval.  
+   - Hugging Face’s SentenceTransformers for embedding.  
+2. Language Generation Module  
+   - OpenAI GPT models (e.g., GPT-3.5, GPT-4).  
+   - Contextual input creation from retrieved data.  
+3. User Interface  
+   - Built with Streamlit for interaction.  
+   - Features: document upload, API key input, model selection.  
+
+---
+
+## Data Flow
+1. User Query $\rightarrow$ Vector Embedding  
+2. FAISS Retrieval $\rightarrow$ Relevant Document Fragments  
+3. GPT Integration $\rightarrow$ Contextual Response Generation  
+4. Streamlit UI $\rightarrow$ Displays Response and Sources  
+
+---
+
+## Implementation Details
+### Document Retrieval  
+- Tools: FAISS + SentenceTransformers  
+- Techniques:  
+  - Embedding queries and documents using `all-MiniLM-L6-v2`.  
+  - Re-ranking with CrossEncoder models for precision.  
+
+---
+
+## Implementation Details
+### Generation Module  
+- User-selected GPT models (e.g., GPT-3.5, GPT-4).  
+- Optimized parameters:  
+  - Temperature: 0.7  
+  - Token limits to control output length.  
+
+---
+
+## Evaluation
+### Key Tests Conducted  
+1. File Type Support:  
+   - Supports PDF, PNG, HTML, TSV, JPG.  
+2. File Size:  
+   - Handles small files efficiently.  
+   - Large files (>100MB) processed in segments.  
+   - Extremely large files (>1GB) may require stream processing.
+
+---
+
+## Evaluation
+### Key Tests Conducted 
+3. Invalid Content:  
+   - Handles empty or garbled files with appropriate feedback.  
+4. Query Robustness:  
+   - Stability with invalid or empty queries.  
+
+---
+
+## Performance Analysis
+### GPT-3.5 vs. GPT-4  
+| Criterion     | GPT-4       | GPT-3.5     |
+|-------------------|-----------------|-----------------|
+| Accuracy       | Higher          | Lower           |
+| Context Relevance | Stronger Context Understanding | Generalized Responses |
+| Detail Quality  | More detailed   | Less specific   |
+
+---
+
+## Conclusion
+- Successfully implemented a dynamic, scalable RAG system.  
+- Strengths:  
+  - Efficient retrieval, accurate generation.  
+  - Transparency with source embedding.  
+- Future Scope:  
+  - Support for multi-modal data (images, audio, video).  
+  - Fine-tuning GPT for specific domains.  
+
+---
+
+## Appendix
+- GitHub Repository: <br> [github.com/pengleee/Project-5800-RAG-2024Fall](https://github.com/pengleee/Project-5800-RAG-2024Fall)
+- Knowledge Base: User-uploaded documents.  
+- Evaluation Dataset: User queries.
+
+# Thank you!
