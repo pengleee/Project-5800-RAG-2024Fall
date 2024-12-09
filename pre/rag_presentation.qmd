@@ -17,7 +17,7 @@ format:
 Speaker: Peng Li
 
 :::{.notes}
-[1 min] Good afternoon, everyone. Today, we'll be presenting our project on the End-to-End Retrieval-Augmented Generation (RAG) System. This project was developed by Yuting Fan, Peng Li, and Yiwei Qi for the DSAN 5800 course. Our goal is to create a scalable, efficient, and user-friendly system that integrates document retrieval with AI-generated responses. I’ll start by introducing the project and system overview, while my teammates will walk you through implementation, evaluation, and results.
+[1 min] Good afternoon, everyone. Today, we'll be presenting our project on the End-to-End Retrieval-Augmented Generation (RAG) System. This project was developed by Yuting Fan, Peng Li, and Yiwei Qi for this DSAN 5800 course. Our goal is to create a scalable, efficient, and user-friendly system that integrates document retrieval with AI-generated responses. I’ll start by introducing the project and system overview, while my teammates will walk you through implementation, evaluation, and results.
 :::
 
 ## Introduction
