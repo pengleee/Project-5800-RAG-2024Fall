@@ -35,6 +35,12 @@ Give me details about the suspect of UnitedHeadlthcare CEO's assassination that 
 ![Dec 9, 2024](images/motivation2.png){style="width 100%" fig-align="center"}
 :::
 
+::: {.column width="20%"}
+Challenges:
+
+1. No source
+2. Out of date
+:::
 :::
 
 
