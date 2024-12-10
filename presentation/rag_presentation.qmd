@@ -235,6 +235,12 @@ Speaker: Yiwei Qi
    - Large files (>100MB) processed in segments.  
    - Extremely large files (>1GB) may require stream processing.
 
+:::{.notes}
+We conducted comprehensive tests on the Search Enhanced Generation (RAG) system to verify its compatibility with different file types, sizes, and formats. These tests evaluate the system's ability to handle large files and its robustness against invalid file contents and queries. The goal is to ensure stable performance, efficiency, and clear error feedback in case of user input issues.
+
+We tested mainstream file types (PDF, PNG, HTML, TSV, JPG, etc.) to verify system compatibility, finding that the system supports text-based files like PDFs but cannot process binary files (e.g., .dmg, .pkg) or files lacking natural language text. In the file size test, small files (<1KB) processed quickly, while larger files (>100MB) were handled using batch processing, though query speed decreased as the file size approached memory limits. For very large files (>1GB), memory issues occurred during preprocessing, highlighting the need for a stream processing mechanism. 
+:::
+
 ---
 
 ## Evaluation
@@ -245,7 +251,8 @@ Speaker: Yiwei Qi
 ![](images/invalid_files.png){fig-align="center"}
 
 :::{.notes}
-[2 min] To ensure system reliability, we tested file support, query handling, and performance. It can handle most file types like PDF and plain text. It performs well with large files up to 100MB, but files over 1GB require optimization. The system also handles garbled files and malformed queries with clear user feedback.
+In the invalid file content test, the system accurately detects empty files (e.g., Doc.docx) and provides a clear error message, while it struggles to generate meaningful embeddings for garbled files (e.g., well.docx) but still provides feedback to the user. 
+
 :::
 
 ---
@@ -253,6 +260,11 @@ Speaker: Yiwei Qi
 ## Query Validation
 
 ![](images/query-validation.png){fig-align="center"}
+
+:::{.notes}
+For the query validity test, the system handles invalid queries (e.g., random characters) by returning "No matching content found" when no relevant documents are found. In cases of empty queries, the system blocks execution and prompts users to enter valid questions. 
+
+:::
 
 ---
 
@@ -265,7 +277,8 @@ Speaker: Yiwei Qi
 | **Detail Quality**  | More detailed   | Less specific   |
 
 :::{.notes}
-[1 min] We compared GPT-3.5 and GPT-4. Unsurprisingly, GPT-4 performs better, especially with complex queries. It produces more accurate, relevant, and logically coherent responses.
+In terms of accuracy, GPT-4.0 outperforms GPT-3.5-Turbo by clearly extracting and summarizing key information from documents, such as experimental results and research contributions, with better alignment to the original content. GPT-4.0 also demonstrates superior semantic relevance, offering more logical, targeted, and coherent answers to complex queries, while GPT-3.5-Turbo's responses are slightly less detailed and sometimes miss important points. 
+
 :::
 
 ---
@@ -280,7 +293,7 @@ Speaker: Yiwei Qi
   - Fine-tuning GPT for specific domains.
 
 :::{.notes}
-[2 min] In summary, we developed a functional and scalable RAG system. In the future, we hope to expand to multi-modal data and fine-tune GPT models for specialized fields like healthcare.
+In conclusion, We have successfully implemented an end-to-end Retrieval Augmented Generation (RAG) system that combines efficient FAISS-based retrieval with GPT for accurate, fast answers and supports document uploading and source tracing for interpretability. The system allows users to connect their OpenAI accounts and choose different language models for personalized performance, while also offering scalability to meet diverse needs. Future improvements include extending support for multi-modal data (e.g., images, audio, video) and fine-tuning GPT with domain-specific datasets to enhance accuracy, enabling broader applications in fields like intelligent question answering and cross-modal knowledge management.
 :::
 
 # Thank you!
