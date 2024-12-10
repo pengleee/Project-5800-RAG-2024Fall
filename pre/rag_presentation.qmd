@@ -7,10 +7,11 @@ format:
     footer: "DSAN5800 Project: RAG System"
     slide-number: true
     chalkboard: 
-      buttons: false
+      buttons: true
     preview-links: auto
-    # logo: images/gu_logo.png
+    logo: images/gu_logo.png
     css: styles.css
+    # embed-resources: true
 ---
 
 # Introduction & System Overview
@@ -75,10 +76,10 @@ Speaker: Peng Li
 [1 min] The process starts with a user query, which is converted into an embedding. The FAISS retriever searches for related documents, and those are combined with the query to generate a response using GPT. The answer is presented to the user in a simple interface built with Streamlit.
 :::
 
-# Implementation & Key Features {data-name='Implementation'}
+# Implementation
 Speaker: Yuting Fan
 
-## Implementation Details {auto-animate="true"}
+## Implementation Details
 ### Document Retrieval
 - Uses `FAISS` for dense vector-based search.
 - Embedding creation via `all-MiniLM-L6-v2` (Hugging Face's SentenceTransformers).
@@ -98,34 +99,34 @@ def build_index(self, documents):
 :::
 ---
 
-## Implementation Details {auto-animate="true"}
+## Implementation Details
 ### Language Generation
 - Supports user selection of GPT-3.5 or GPT-4.
 - Merges user queries with retrieved document content as context.
 
 ```python
 def generate_response(self, query, model_name="gpt-3.5-turbo", k=5):
-        """Generate a response by combining retrieval and generation."""
-        if not openai.api_key:
-            raise ValueError("API key is not set. Please enter your OpenAI API key.")
-        
-        retrieved_docs = self.retriever.retrieve(query, k)
-        reranked_docs = self.retriever.rerank(query, retrieved_docs)
-        context = "\n".join([f"{i+1}. {doc}" for i, (doc, _) in enumerate(reranked_docs)])
-        prompt = (
-            f"Contextual documents:\n{context}\n\n"
-            f"Query: {query}\n"
-            f"Response:"
-        )
-        response = openai.ChatCompletion.create(
-            model=model_name, # change model based on user selection
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=1000
-        )
-        return response['choices'][0]['message']['content'].strip(), reranked_docs
+    """Generate a response by combining retrieval and generation."""
+    if not openai.api_key:
+        raise ValueError("API key is not set. Please enter your OpenAI API key.")
+    
+    retrieved_docs = self.retriever.retrieve(query, k)
+    reranked_docs = self.retriever.rerank(query, retrieved_docs)
+    context = "\n".join([f"{i+1}. {doc}" for i, (doc, _) in enumerate(reranked_docs)])
+    prompt = (
+        f"Contextual documents:\n{context}\n\n"
+        f"Query: {query}\n"
+        f"Response:"
+    )
+    response = openai.ChatCompletion.create(
+        model=model_name, # change model based on user selection
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=1000
+    )
+    return response['choices'][0]['message']['content'].strip(), reranked_docs
 ```
 
 :::{.notes}
@@ -134,40 +135,63 @@ def generate_response(self, query, model_name="gpt-3.5-turbo", k=5):
 
 ---
 
+## Implementation Details
+### Reranking
+
+- Reranking is introduced in the retrieval process, and sorted the preliminary search results by the `CrossEncoder` model (cross-encoder/ms-marco-MiniLM-L-12-v2).
+- In the reordering stage, semantic matching scores of query and candidate document pairs are used to further optimize the search results
+
+```python
+def rerank(self, query, retrieved_docs):
+    """Re-rank the retrieved documents using a cross-encoder."""
+    pairs = [(query, doc[0]) for doc in retrieved_docs]
+    scores = self.reranker.predict(pairs)
+    reranked = sorted(zip(retrieved_docs, scores), key=lambda x: x[1], reverse=True)
+    return [(doc[0], score) for doc, score in reranked]
+```
+---
+
 ## User Interface
 
-![](images/UI.png){fig-align="center" width="1000"}
+::: columns
 
-[Contextual Retrieval Augmented Generation (RAG) System](https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app)
+::: {.column width="50%"}
+
+![](images/UI.png){style="width 100%"}
+
+::: {.slide style="font-size: 50%;"}
+[Link to Contextual Retrieval Augmented Generation (RAG) System](https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app)
+:::
+
+:::
+
+::: {.column width="50%"}
+- Real-time Document Upload: Users can update the knowledge base on the fly.
+- Multiple GPT Models: Choose between GPT-3.5 and GPT-4 for generation.
+- Retrieval Transparency: Source of retrieved data is embedded in responses.
+:::
+
+:::
 
 :::{.notes}
 [1 min] We’ve also made the system easy to use. The user interface is built with Streamlit, allowing users to upload custom documents and select which GPT model they want to use. This allows for real-time responses and makes it easy to expand the knowledge base on demand.
 
 [*Give a demo about how to use the system*]
+
+[2 min] Some key features of our system include real-time document uploads, support for multiple GPT models, and transparency. The system displays which document it retrieved information from, providing credibility and context for users.
 :::
 
 ---
 
-## System Features
+## Example
 
-- Real-time Document Upload: Users can update the knowledge base on the fly.
-- Multiple GPT Models: Choose between GPT-3.5 and GPT-4 for generation.
-- Retrieval Transparency: Source of retrieved data is embedded in responses.
+- Document Uploaded: Declaration of Independence
+- Query: What is the attitude of this writer?
 
-```md
-- For abolishing the free System of English Laws in a neighbouring Province, establishing therein an Arbitrary government, and enlarging its Boundaries so as to render it at once an example and fit instrument for introducing the same absolute rule into these Colonies:
-  - (Score: -9.223430633544922)
-- For suspending our own Legislatures, and declaring themselves invested with power to legislate for us in all cases whatsoever.
-  - (Score: -10.269696235656738)
-- For depriving us in many cases, of the benefits of Trial by Jury:
-  - (Score: -11.189470291137695)
-```
+![](images/example.png){fig-align="center" style="width: 100%"}
 
-:::{.notes}
-[2 min] Some key features of our system include real-time document uploads, support for multiple GPT models, and transparency. The system displays which document it retrieved information from, providing credibility and context for users.
-:::
 
-# Evaluation, Results & Conclusion
+# Evaluation & Conclusion
 Speaker: Yiwei Qi
 
 ## Evaluation
@@ -190,6 +214,12 @@ Speaker: Yiwei Qi
 :::{.notes}
 [2 min] To ensure system reliability, we tested file support, query handling, and performance. It can handle most file types like PDF and plain text. It performs well with large files up to 100MB, but files over 1GB require optimization. The system also handles garbled files and malformed queries with clear user feedback.
 :::
+
+---
+
+## Query Validation
+
+![](images/query-validation.png){fig-align="center"}
 
 ---
 

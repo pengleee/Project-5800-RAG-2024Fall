@@ -6,12 +6,11 @@
   border-width: 3px;
 }
 
-img[src*="images/gu_logo.png"] {
-  width: 1500px;  /* Adjust to your desired size */
-  height: auto;  /* Keeps aspect ratio */
+.reveal .slides .logo img {
+  height: 1000% !important;  /* Adjust height */
+  width: auto;              /* Maintain aspect ratio */
 }
 
-.reveal .slides .logo img {
-  height: 800px !important;  /* Adjust height */
-  width: auto;              /* Maintain aspect ratio */
+.reveal .slide-logo {
+  max-height: 2em !important;
 }

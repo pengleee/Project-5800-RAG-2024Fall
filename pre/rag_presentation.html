@@ -546,24 +546,24 @@ Yuting Fan, Peng Li, Yiwei Qi
       }</style></aside>
 </section></section>
 <section>
-<section id="implementation-key-features" class="title-slide slide level1 center" data-name="Implementation">
-<h1>Implementation &amp; Key Features</h1>
+<section id="implementation" class="title-slide slide level1 center">
+<h1>Implementation</h1>
 <p>Speaker: Yuting Fan</p>
 </section>
-<section id="implementation-details" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Implementation Details</h2>
+<section id="implementation-details" class="slide level2">
+<h2>Implementation Details</h2>
 <h3 id="document-retrieval">Document Retrieval</h3>
 <ul>
 <li>Uses <code>FAISS</code> for dense vector-based search.</li>
 <li>Embedding creation via <code>all-MiniLM-L6-v2</code> (Hugging Face’s SentenceTransformers).</li>
 <li>Uses re-ranking with CrossEncoder to prioritize results.</li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb1-1" class="hljs-ln-code"><a href=""></a><span class="kw">def</span> build_index(<span class="va">self</span>, documents):</span>
-<span id="cb1-2" class="hljs-ln-code"><a href=""></a>    <span class="co">"""Build a FAISS index for the given documents."""</span></span>
-<span id="cb1-3" class="hljs-ln-code"><a href=""></a>    <span class="va">self</span>.documents <span class="op">=</span> documents</span>
-<span id="cb1-4" class="hljs-ln-code"><a href=""></a>    embeddings <span class="op">=</span> <span class="va">self</span>.model.encode(documents, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-5" class="hljs-ln-code"><a href=""></a>    <span class="va">self</span>.index <span class="op">=</span> faiss.IndexFlatL2(embeddings.shape[<span class="dv">1</span>])</span>
-<span id="cb1-6" class="hljs-ln-code"><a href=""></a>    <span class="va">self</span>.index.add(embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="kw">def</span> build_index(<span class="va">self</span>, documents):</span>
+<span id="cb1-2"><a href=""></a>    <span class="co">"""Build a FAISS index for the given documents."""</span></span>
+<span id="cb1-3"><a href=""></a>    <span class="va">self</span>.documents <span class="op">=</span> documents</span>
+<span id="cb1-4"><a href=""></a>    embeddings <span class="op">=</span> <span class="va">self</span>.model.encode(documents, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-5"><a href=""></a>    <span class="va">self</span>.index <span class="op">=</span> faiss.IndexFlatL2(embeddings.shape[<span class="dv">1</span>])</span>
+<span id="cb1-6"><a href=""></a>    <span class="va">self</span>.index.add(embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <aside class="notes">
 <p>[1 min] Now let’s look at the system’s core technical implementation. For retrieval, we use FAISS, a vector search tool, combined with Hugging Face’s SentenceTransformers to create semantic embeddings.</p>
 <style type="text/css">
@@ -578,35 +578,35 @@ Yuting Fan, Peng Li, Yiwei Qi
           display:block!important;
       }</style></aside>
 </section>
-<section id="implementation-details-1" class="slide level2" data-auto-animate="true">
-<h2 data-id="quarto-animate-title">Implementation Details</h2>
+<section id="implementation-details-1" class="slide level2">
+<h2>Implementation Details</h2>
 <h3 id="language-generation">Language Generation</h3>
 <ul>
 <li>Supports user selection of GPT-3.5 or GPT-4.</li>
 <li>Merges user queries with retrieved document content as context.</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy" data-id="quarto-animate-code"><code class="sourceCode python hljs"><span id="cb2-1" class="hljs-ln-code"><a href=""></a><span class="kw">def</span> generate_response(<span class="va">self</span>, query, model_name<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>, k<span class="op">=</span><span class="dv">5</span>):</span>
-<span id="cb2-2" class="hljs-ln-code"><a href=""></a>        <span class="co">"""Generate a response by combining retrieval and generation."""</span></span>
-<span id="cb2-3" class="hljs-ln-code"><a href=""></a>        <span class="cf">if</span> <span class="kw">not</span> openai.api_key:</span>
-<span id="cb2-4" class="hljs-ln-code"><a href=""></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"API key is not set. Please enter your OpenAI API key."</span>)</span>
-<span id="cb2-5" class="hljs-ln-code"><a href=""></a>        </span>
-<span id="cb2-6" class="hljs-ln-code"><a href=""></a>        retrieved_docs <span class="op">=</span> <span class="va">self</span>.retriever.retrieve(query, k)</span>
-<span id="cb2-7" class="hljs-ln-code"><a href=""></a>        reranked_docs <span class="op">=</span> <span class="va">self</span>.retriever.rerank(query, retrieved_docs)</span>
-<span id="cb2-8" class="hljs-ln-code"><a href=""></a>        context <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([<span class="ss">f"</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>doc<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i, (doc, _) <span class="kw">in</span> <span class="bu">enumerate</span>(reranked_docs)])</span>
-<span id="cb2-9" class="hljs-ln-code"><a href=""></a>        prompt <span class="op">=</span> (</span>
-<span id="cb2-10" class="hljs-ln-code"><a href=""></a>            <span class="ss">f"Contextual documents:</span><span class="ch">\n</span><span class="sc">{</span>context<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
-<span id="cb2-11" class="hljs-ln-code"><a href=""></a>            <span class="ss">f"Query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb2-12" class="hljs-ln-code"><a href=""></a>            <span class="ss">f"Response:"</span></span>
-<span id="cb2-13" class="hljs-ln-code"><a href=""></a>        )</span>
-<span id="cb2-14" class="hljs-ln-code"><a href=""></a>        response <span class="op">=</span> openai.ChatCompletion.create(</span>
-<span id="cb2-15" class="hljs-ln-code"><a href=""></a>            model<span class="op">=</span>model_name, <span class="co"># change model based on user selection</span></span>
-<span id="cb2-16" class="hljs-ln-code"><a href=""></a>            messages<span class="op">=</span>[</span>
-<span id="cb2-17" class="hljs-ln-code"><a href=""></a>                {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You are a helpful assistant."</span>},</span>
-<span id="cb2-18" class="hljs-ln-code"><a href=""></a>                {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}</span>
-<span id="cb2-19" class="hljs-ln-code"><a href=""></a>            ],</span>
-<span id="cb2-20" class="hljs-ln-code"><a href=""></a>            max_tokens<span class="op">=</span><span class="dv">1000</span></span>
-<span id="cb2-21" class="hljs-ln-code"><a href=""></a>        )</span>
-<span id="cb2-22" class="hljs-ln-code"><a href=""></a>        <span class="cf">return</span> response[<span class="st">'choices'</span>][<span class="dv">0</span>][<span class="st">'message'</span>][<span class="st">'content'</span>].strip(), reranked_docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="kw">def</span> generate_response(<span class="va">self</span>, query, model_name<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>, k<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb2-2"><a href=""></a>    <span class="co">"""Generate a response by combining retrieval and generation."""</span></span>
+<span id="cb2-3"><a href=""></a>    <span class="cf">if</span> <span class="kw">not</span> openai.api_key:</span>
+<span id="cb2-4"><a href=""></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"API key is not set. Please enter your OpenAI API key."</span>)</span>
+<span id="cb2-5"><a href=""></a>    </span>
+<span id="cb2-6"><a href=""></a>    retrieved_docs <span class="op">=</span> <span class="va">self</span>.retriever.retrieve(query, k)</span>
+<span id="cb2-7"><a href=""></a>    reranked_docs <span class="op">=</span> <span class="va">self</span>.retriever.rerank(query, retrieved_docs)</span>
+<span id="cb2-8"><a href=""></a>    context <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([<span class="ss">f"</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>doc<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i, (doc, _) <span class="kw">in</span> <span class="bu">enumerate</span>(reranked_docs)])</span>
+<span id="cb2-9"><a href=""></a>    prompt <span class="op">=</span> (</span>
+<span id="cb2-10"><a href=""></a>        <span class="ss">f"Contextual documents:</span><span class="ch">\n</span><span class="sc">{</span>context<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb2-11"><a href=""></a>        <span class="ss">f"Query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb2-12"><a href=""></a>        <span class="ss">f"Response:"</span></span>
+<span id="cb2-13"><a href=""></a>    )</span>
+<span id="cb2-14"><a href=""></a>    response <span class="op">=</span> openai.ChatCompletion.create(</span>
+<span id="cb2-15"><a href=""></a>        model<span class="op">=</span>model_name, <span class="co"># change model based on user selection</span></span>
+<span id="cb2-16"><a href=""></a>        messages<span class="op">=</span>[</span>
+<span id="cb2-17"><a href=""></a>            {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You are a helpful assistant."</span>},</span>
+<span id="cb2-18"><a href=""></a>            {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}</span>
+<span id="cb2-19"><a href=""></a>        ],</span>
+<span id="cb2-20"><a href=""></a>        max_tokens<span class="op">=</span><span class="dv">1000</span></span>
+<span id="cb2-21"><a href=""></a>    )</span>
+<span id="cb2-22"><a href=""></a>    <span class="cf">return</span> response[<span class="st">'choices'</span>][<span class="dv">0</span>][<span class="st">'message'</span>][<span class="st">'content'</span>].strip(), reranked_docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <aside class="notes">
 <p>[1 min] For generation, we use OpenAI’s GPT models, with users having the option to select GPT-3.5 or GPT-4. The user input is combined with document content to generate accurate and relevant responses.</p>
 <style type="text/css">
@@ -621,39 +621,38 @@ Yuting Fan, Peng Li, Yiwei Qi
           display:block!important;
       }</style></aside>
 </section>
+<section id="implementation-details-2" class="slide level2">
+<h2>Implementation Details</h2>
+<h3 id="reranking">Reranking</h3>
+<ul>
+<li>Reranking is introduced in the retrieval process, and sorted the preliminary search results by the <code>CrossEncoder</code> model (cross-encoder/ms-marco-MiniLM-L-12-v2).</li>
+<li>In the reordering stage, semantic matching scores of query and candidate document pairs are used to further optimize the search results</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="kw">def</span> rerank(<span class="va">self</span>, query, retrieved_docs):</span>
+<span id="cb3-2"><a href=""></a>    <span class="co">"""Re-rank the retrieved documents using a cross-encoder."""</span></span>
+<span id="cb3-3"><a href=""></a>    pairs <span class="op">=</span> [(query, doc[<span class="dv">0</span>]) <span class="cf">for</span> doc <span class="kw">in</span> retrieved_docs]</span>
+<span id="cb3-4"><a href=""></a>    scores <span class="op">=</span> <span class="va">self</span>.reranker.predict(pairs)</span>
+<span id="cb3-5"><a href=""></a>    reranked <span class="op">=</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(retrieved_docs, scores), key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-6"><a href=""></a>    <span class="cf">return</span> [(doc[<span class="dv">0</span>], score) <span class="cf">for</span> doc, score <span class="kw">in</span> reranked]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
 <section id="user-interface" class="slide level2">
 <h2>User Interface</h2>
-
-<img data-src="images/UI.png" class="quarto-figure quarto-figure-center r-stretch" width="1000"><p><a href="https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app">Contextual Retrieval Augmented Generation (RAG) System</a></p>
-<aside class="notes">
-<p>[1 min] We’ve also made the system easy to use. The user interface is built with Streamlit, allowing users to upload custom documents and select which GPT model they want to use. This allows for real-time responses and makes it easy to expand the knowledge base on demand.</p>
-<p>[<em>Give a demo about how to use the system</em>]</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="system-features" class="slide level2">
-<h2>System Features</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="images/UI.png" style="width 100%"></p>
+<div class="slide" style="font-size: 50%;">
+<p><a href="https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app">Link to Contextual Retrieval Augmented Generation (RAG) System</a></p>
+</div>
+</div><div class="column" style="width:50%;">
 <ul>
 <li>Real-time Document Upload: Users can update the knowledge base on the fly.</li>
 <li>Multiple GPT Models: Choose between GPT-3.5 and GPT-4 for generation.</li>
 <li>Retrieval Transparency: Source of retrieved data is embedded in responses.</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource md number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href=""></a><span class="ss">- </span>For abolishing the free System of English Laws in a neighbouring Province, establishing therein an Arbitrary government, and enlarging its Boundaries so as to render it at once an example and fit instrument for introducing the same absolute rule into these Colonies:</span>
-<span id="cb3-2"><a href=""></a><span class="ss">  - </span>(Score: -9.223430633544922)</span>
-<span id="cb3-3"><a href=""></a><span class="ss">- </span>For suspending our own Legislatures, and declaring themselves invested with power to legislate for us in all cases whatsoever.</span>
-<span id="cb3-4"><a href=""></a><span class="ss">  - </span>(Score: -10.269696235656738)</span>
-<span id="cb3-5"><a href=""></a><span class="ss">- </span>For depriving us in many cases, of the benefits of Trial by Jury:</span>
-<span id="cb3-6"><a href=""></a><span class="ss">  - </span>(Score: -11.189470291137695)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div>
 <aside class="notes">
+<p>[1 min] We’ve also made the system easy to use. The user interface is built with Streamlit, allowing users to upload custom documents and select which GPT model they want to use. This allows for real-time responses and makes it easy to expand the knowledge base on demand.</p>
+<p>[<em>Give a demo about how to use the system</em>]</p>
 <p>[2 min] Some key features of our system include real-time document uploads, support for multiple GPT models, and transparency. The system displays which document it retrieved information from, providing credibility and context for users.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -666,10 +665,18 @@ Yuting Fan, Peng Li, Yiwei Qi
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section></section>
+</section>
+<section id="example" class="slide level2">
+<h2>Example</h2>
+<ul>
+<li>Document Uploaded: Declaration of Independence</li>
+<li>Query: What is the attitude of this writer?</li>
+</ul>
+
+<img data-src="images/example.png" class="quarto-figure quarto-figure-center r-stretch" style="width: 100%"></section></section>
 <section>
-<section id="evaluation-results-conclusion" class="title-slide slide level1 center">
-<h1>Evaluation, Results &amp; Conclusion</h1>
+<section id="evaluation-conclusion" class="title-slide slide level1 center">
+<h1>Evaluation &amp; Conclusion</h1>
 <p>Speaker: Yiwei Qi</p>
 </section>
 <section id="evaluation" class="slide level2">
@@ -711,6 +718,10 @@ Yuting Fan, Peng Li, Yiwei Qi
           display:block!important;
       }</style></aside>
 </section>
+<section id="query-validation" class="slide level2">
+<h2>Query Validation</h2>
+
+<img data-src="images/query-validation.png" class="quarto-figure quarto-figure-center r-stretch"></section>
 <section id="performance-analysis" class="slide level2">
 <h2>Performance Analysis</h2>
 <h3 id="gpt-3.5-vs.-gpt-4">GPT-3.5 vs.&nbsp;GPT-4</h3>
@@ -795,6 +806,7 @@ Yuting Fan, Peng Li, Yiwei Qi
 <section id="thank-you" class="title-slide slide level1 center">
 <h1>Thank you!</h1>
 <div class="quarto-auto-generated-content">
+<p><img src="images/gu_logo.png" class="slide-logo"></p>
 <div class="footer footer-default">
 <p>DSAN5800 Project: RAG System</p>
 </div>
@@ -832,7 +844,7 @@ Yuting Fan, Peng Li, Yiwei Qi
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'chalkboard': {"buttons":false},
+'chalkboard': {"buttons":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
