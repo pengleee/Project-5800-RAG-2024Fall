@@ -86,12 +86,33 @@ Speaker: Yuting Fan
 - Uses re-ranking with CrossEncoder to prioritize results.
 
 ```python
-def build_index(self, documents):
-    """Build a FAISS index for the given documents."""
-    self.documents = documents
-    embeddings = self.model.encode(documents, show_progress_bar=True)
-    self.index = faiss.IndexFlatL2(embeddings.shape[1])
-    self.index.add(embeddings)
+class DenseRetriever:
+    def __init__(self, model_name="all-MiniLM-L6-v2", reranker_model_name="cross-encoder/ms-marco-MiniLM-L-12-v2"):
+        self.model = SentenceTransformer(model_name)
+        self.index = None
+        self.documents = []
+        self.reranker = CrossEncoder(reranker_model_name)
+
+    def build_index(self, documents):
+        """Build a FAISS index for the given documents."""
+        self.documents = documents
+        embeddings = self.model.encode(documents, show_progress_bar=True)
+        self.index = faiss.IndexFlatL2(embeddings.shape[1])
+        self.index.add(embeddings)
+
+    def retrieve(self, query, k=5):
+        """Retrieve the top-k most relevant documents for a query using FAISS."""
+        query_vector = self.model.encode([query])
+        distances, indices = self.index.search(query_vector, k)
+        results = [(self.documents[i], distances[0][idx]) for idx, i in enumerate(indices[0])]
+        return results
+
+    def rerank(self, query, retrieved_docs):
+        """Re-rank the retrieved documents using a cross-encoder."""
+        pairs = [(query, doc[0]) for doc in retrieved_docs]
+        scores = self.reranker.predict(pairs)
+        reranked = sorted(zip(retrieved_docs, scores), key=lambda x: x[1], reverse=True)
+        return [(doc[0], score) for doc, score in reranked]
 ```
 
 :::{.notes}
@@ -105,28 +126,32 @@ def build_index(self, documents):
 - Merges user queries with retrieved document content as context.
 
 ```python
-def generate_response(self, query, model_name="gpt-3.5-turbo", k=5):
-    """Generate a response by combining retrieval and generation."""
-    if not openai.api_key:
-        raise ValueError("API key is not set. Please enter your OpenAI API key.")
-    
-    retrieved_docs = self.retriever.retrieve(query, k)
-    reranked_docs = self.retriever.rerank(query, retrieved_docs)
-    context = "\n".join([f"{i+1}. {doc}" for i, (doc, _) in enumerate(reranked_docs)])
-    prompt = (
-        f"Contextual documents:\n{context}\n\n"
-        f"Query: {query}\n"
-        f"Response:"
-    )
-    response = openai.ChatCompletion.create(
-        model=model_name, # change model based on user selection
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=1000
-    )
-    return response['choices'][0]['message']['content'].strip(), reranked_docs
+class RAGSystem:
+    def __init__(self, retriever):
+        self.retriever = retriever
+
+    def generate_response(self, query, model_name="gpt-3.5-turbo", k=5):
+        """Generate a response by combining retrieval and generation."""
+        if not openai.api_key:
+            raise ValueError("API key is not set. Please enter your OpenAI API key.")
+        
+        retrieved_docs = self.retriever.retrieve(query, k)
+        reranked_docs = self.retriever.rerank(query, retrieved_docs)
+        context = "\n".join([f"{i+1}. {doc}" for i, (doc, _) in enumerate(reranked_docs)])
+        prompt = (
+            f"Contextual documents:\n{context}\n\n"
+            f"Query: {query}\n"
+            f"Response:"
+        )
+        response = openai.ChatCompletion.create(
+            model=model_name, # change model based on user selection
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1000
+        )
+        return response['choices'][0]['message']['content'].strip(), reranked_docs
 ```
 
 :::{.notes}
@@ -136,39 +161,20 @@ def generate_response(self, query, model_name="gpt-3.5-turbo", k=5):
 ---
 
 ## Implementation Details
-### Reranking
-
-- Reranking is introduced in the retrieval process, and sorted the preliminary search results by the `CrossEncoder` model (cross-encoder/ms-marco-MiniLM-L-12-v2).
-- In the reordering stage, semantic matching scores of query and candidate document pairs are used to further optimize the search results
-
-```python
-def rerank(self, query, retrieved_docs):
-    """Re-rank the retrieved documents using a cross-encoder."""
-    pairs = [(query, doc[0]) for doc in retrieved_docs]
-    scores = self.reranker.predict(pairs)
-    reranked = sorted(zip(retrieved_docs, scores), key=lambda x: x[1], reverse=True)
-    return [(doc[0], score) for doc, score in reranked]
-```
----
-
-## User Interface
+### User Interface
 
 ::: columns
 
-::: {.column width="50%"}
+::: {.column width="65%"}
 
 ![](images/UI.png){style="width 100%"}
-
-::: {.slide style="font-size: 50%;"}
-[Link to Contextual Retrieval Augmented Generation (RAG) System](https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app)
 :::
 
-:::
-
-::: {.column width="50%"}
-- Real-time Document Upload: Users can update the knowledge base on the fly.
-- Multiple GPT Models: Choose between GPT-3.5 and GPT-4 for generation.
-- Retrieval Transparency: Source of retrieved data is embedded in responses.
+::: {.column width="35%"}
+- Real-time Document Upload
+- Multiple GPT Models
+- Retrieval Transparency
+- [Link](https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app)
 :::
 
 :::
@@ -185,11 +191,15 @@ def rerank(self, query, retrieved_docs):
 
 ## Example
 
-- Document Uploaded: Declaration of Independence
-- Query: What is the attitude of this writer?
+![](images/example1.png){fig-align="center" style="width: 100%"}
 
-![](images/example.png){fig-align="center" style="width: 100%"}
+## Example
 
+![](images/example2.png){fig-align="center" style="width: 100%"}
+
+## Example
+
+![](images/example3.png){fig-align="center" style="width: 100%"}
 
 # Evaluation & Conclusion
 Speaker: Yiwei Qi
