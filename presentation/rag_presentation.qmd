@@ -24,7 +24,7 @@ Speaker: Peng Li
 ## Motivation
 
 **Prompt**: <br>
-Give me details about the suspect of UnitedHeadlthcare CEO's assassination that happended on Dec 4, 2024.
+Give me details about the suspect of UnitedHealthcare CEO's assassination that happended on Dec 4, 2024.
 
 ::: columns
 ::: {.column width="40%"}
