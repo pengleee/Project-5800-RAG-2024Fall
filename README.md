@@ -1,6 +1,6 @@
 ## End-to-End Retrieval-Augmented Generation (RAG) System
 
-👉[Link to the RAG System](https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app/)
+👉 [Link to the RAG System](https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app/)
 
 This is the project repository for the course **DSAN5800: Advanced NLP** at Georgetown University, 2024 Fall.
 
