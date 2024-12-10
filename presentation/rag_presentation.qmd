@@ -21,13 +21,28 @@ Speaker: Peng Li
 [1 min] Good afternoon, everyone. Today, we'll be presenting our project on the End-to-End Retrieval-Augmented Generation (RAG) System. This project was developed by Yuting Fan, Peng Li, and Yiwei Qi for this DSAN 5800 course. Our goal is to create a scalable, efficient, and user-friendly system that integrates document retrieval with AI-generated responses. I’ll start by introducing the project and system overview, while my teammates will walk you through implementation, evaluation, and results.
 :::
 
+## Motivation
+
+**Prompt**: <br>
+Give me details about the suspect of UnitedHeadlthcare CEO's assassination that happended on Dec 4, 2024.
+
+::: columns
+::: {.column width="40%"}
+![Dec 8, 2024](images/motivation1.png){style="width 100%" fig-align="center"}
+:::
+
+::: {.column width="40%"}
+![Dec 9, 2024](images/motivation2.png){style="width 100%" fig-align="center"}
+:::
+
+:::
+
+
 ## Introduction
 - **RAG Systems**: Combine retrieval modules and generation modules for enhanced responses.
 - **Why it matters**: Solves the issue of hallucination in generative AI by relying on factual document retrieval.
-- **Core Features**:  
-  - Integrates `FAISS` (Facebook AI Similarity Search) for efficient document retrieval.  
-  - Uses `OpenAI API` for context-aware responses.  
-  - Dynamic knowledge base updates.  
+
+<a title="Turtlecrown, CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAG_diagram.svg"><img width="400" alt="RAG diagram" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/RAG_diagram.svg/512px-RAG_diagram.svg.png?20240716134738"></a>
 
 :::{.notes}
 [1 min] So, what is a RAG system? It stands for Retrieval-Augmented Generation. Unlike standard AI models that generate answers from internal knowledge, a RAG system retrieves relevant context from a document database and uses that context to produce accurate, fact-based responses. This makes it highly reliable and reduces hallucinations often seen in AI models. Our system supports dynamic document uploads, retrieval via FAISS, and generation using OpenAI's GPT models.
@@ -38,8 +53,8 @@ Speaker: Peng Li
 ## System Goals
 - Build a scalable, automated end-to-end RAG system.  
 - To achieve:  
-  - High Retrieval Efficiency (via `FAISS`).
-  - Accurate AI Responses (via `GPT`).
+  - High Retrieval Efficiency.
+  - Accurate AI Responses.
   - Dynamic Knowledge Base Adaptability (with user uploads).
 - Embed source information for transparency.  
 
@@ -56,21 +71,23 @@ Speaker: Peng Li
 2. Language Generation Module  
    - OpenAI `GPT` models (GPT-3.5, GPT-4).  
    - Contextual input creation from retrieved data.
+3. User Interface  
+   - Built `Streamlit` web app, supporting document upload, API key input, model selection.
 
 :::{.notes}
 [1 min] Here’s the overall system architecture. It consists of three main modules: document retrieval, language generation, and user interface.
-:::
 
-## System Architecture
-3. User Interface  
-   - Built with `Streamlit` for interaction.  
-   - Features: document upload, API key input, model selection.
-
-### Data Flow
 1. User Query $\rightarrow$ Vector Embedding  
 2. `FAISS` Retrieval $\rightarrow$ Relevant Document Fragments  
 3. `GPT` Integration $\rightarrow$ Contextual Response Generation  
 4. `Streamlit` UI $\rightarrow$ Displays Response and Sources
+:::
+
+<!-- ### Data Flow
+1. User Query $\rightarrow$ Vector Embedding  
+2. `FAISS` Retrieval $\rightarrow$ Relevant Document Fragments  
+3. `GPT` Integration $\rightarrow$ Contextual Response Generation  
+4. `Streamlit` UI $\rightarrow$ Displays Response and Sources -->
 
 :::{.notes}
 [1 min] The process starts with a user query, which is converted into an embedding. The FAISS retriever searches for related documents, and those are combined with the query to generate a response using GPT. The answer is presented to the user in a simple interface built with Streamlit.

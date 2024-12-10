@@ -226,20 +226,33 @@ Yuting Fan, Peng Li, Yiwei Qi
           display:block!important;
       }</style></aside>
 </section>
+<section id="motivation" class="slide level2">
+<h2>Motivation</h2>
+<p><strong>Prompt</strong>: <br> Give me details about the suspect of UnitedHeadlthcare CEO’s assassination that happended on Dec 4, 2024.</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="quarto-figure quarto-figure-center" style="width 100%">
+<figure>
+<p><img data-src="images/motivation1.png"></p>
+<figcaption>Dec 8, 2024</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:40%;">
+<div class="quarto-figure quarto-figure-center" style="width 100%">
+<figure>
+<p><img data-src="images/motivation2.png"></p>
+<figcaption>Dec 9, 2024</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
 <ul>
 <li><strong>RAG Systems</strong>: Combine retrieval modules and generation modules for enhanced responses.</li>
 <li><strong>Why it matters</strong>: Solves the issue of hallucination in generative AI by relying on factual document retrieval.</li>
-<li><strong>Core Features</strong>:
-<ul>
-<li>Integrates <code>FAISS</code> (Facebook AI Similarity Search) for efficient document retrieval.<br>
-</li>
-<li>Uses <code>OpenAI API</code> for context-aware responses.<br>
-</li>
-<li>Dynamic knowledge base updates.</li>
-</ul></li>
 </ul>
+<p><a title="Turtlecrown, CC BY-SA 4.0 <https://creativecommons.org/licenses/by-sa/4.0>, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:RAG_diagram.svg"><img width="400" alt="RAG diagram" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/RAG_diagram.svg/512px-RAG_diagram.svg.png?20240716134738"></a></p>
 <aside class="notes">
 <p>[1 min] So, what is a RAG system? It stands for Retrieval-Augmented Generation. Unlike standard AI models that generate answers from internal knowledge, a RAG system retrieves relevant context from a document database and uses that context to produce accurate, fact-based responses. This makes it highly reliable and reduces hallucinations often seen in AI models. Our system supports dynamic document uploads, retrieval via FAISS, and generation using OpenAI’s GPT models.</p>
 <style type="text/css">
@@ -261,8 +274,8 @@ Yuting Fan, Peng Li, Yiwei Qi
 </li>
 <li>To achieve:
 <ul>
-<li>High Retrieval Efficiency (via <code>FAISS</code>).</li>
-<li>Accurate AI Responses (via <code>GPT</code>).</li>
+<li>High Retrieval Efficiency.</li>
+<li>Accurate AI Responses.</li>
 <li>Dynamic Knowledge Base Adaptability (with user uploads).</li>
 </ul></li>
 <li>Embed source information for transparency.</li>
@@ -297,9 +310,22 @@ Yuting Fan, Peng Li, Yiwei Qi
 </li>
 <li>Contextual input creation from retrieved data.</li>
 </ul></li>
+<li>User Interface
+<ul>
+<li>Built <code>Streamlit</code> web app, supporting document upload, API key input, model selection.</li>
+</ul></li>
 </ol>
 <aside class="notes">
 <p>[1 min] Here’s the overall system architecture. It consists of three main modules: document retrieval, language generation, and user interface.</p>
+<ol type="1">
+<li>User Query <span class="math inline">\(\rightarrow\)</span> Vector Embedding<br>
+</li>
+<li><code>FAISS</code> Retrieval <span class="math inline">\(\rightarrow\)</span> Relevant Document Fragments<br>
+</li>
+<li><code>GPT</code> Integration <span class="math inline">\(\rightarrow\)</span> Contextual Response Generation<br>
+</li>
+<li><code>Streamlit</code> UI <span class="math inline">\(\rightarrow\)</span> Displays Response and Sources</li>
+</ol>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -311,27 +337,11 @@ Yuting Fan, Peng Li, Yiwei Qi
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-<section id="system-architecture-1" class="slide level2">
-<h2>System Architecture</h2>
-<ol start="3" type="1">
-<li>User Interface
-<ul>
-<li>Built with <code>Streamlit</code> for interaction.<br>
-</li>
-<li>Features: document upload, API key input, model selection.</li>
-</ul></li>
-</ol>
-<h3 id="data-flow">Data Flow</h3>
-<ol type="1">
-<li>User Query <span class="math inline">\(\rightarrow\)</span> Vector Embedding<br>
-</li>
-<li><code>FAISS</code> Retrieval <span class="math inline">\(\rightarrow\)</span> Relevant Document Fragments<br>
-</li>
-<li><code>GPT</code> Integration <span class="math inline">\(\rightarrow\)</span> Contextual Response Generation<br>
-</li>
-<li><code>Streamlit</code> UI <span class="math inline">\(\rightarrow\)</span> Displays Response and Sources</li>
-</ol>
+<!-- ### Data Flow
+1. User Query $\rightarrow$ Vector Embedding  
+2. `FAISS` Retrieval $\rightarrow$ Relevant Document Fragments  
+3. `GPT` Integration $\rightarrow$ Contextual Response Generation  
+4. `Streamlit` UI $\rightarrow$ Displays Response and Sources -->
 <aside class="notes">
 <p>[1 min] The process starts with a user query, which is converted into an embedding. The FAISS retriever searches for related documents, and those are combined with the query to generate a response using GPT. The answer is presented to the user in a simple interface built with Streamlit.</p>
 <style type="text/css">
@@ -359,12 +369,33 @@ Yuting Fan, Peng Li, Yiwei Qi
 <li>Embedding creation via <code>all-MiniLM-L6-v2</code> (Hugging Face’s SentenceTransformers).</li>
 <li>Uses re-ranking with CrossEncoder to prioritize results.</li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="kw">def</span> build_index(<span class="va">self</span>, documents):</span>
-<span id="cb1-2"><a href=""></a>    <span class="co">"""Build a FAISS index for the given documents."""</span></span>
-<span id="cb1-3"><a href=""></a>    <span class="va">self</span>.documents <span class="op">=</span> documents</span>
-<span id="cb1-4"><a href=""></a>    embeddings <span class="op">=</span> <span class="va">self</span>.model.encode(documents, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-5"><a href=""></a>    <span class="va">self</span>.index <span class="op">=</span> faiss.IndexFlatL2(embeddings.shape[<span class="dv">1</span>])</span>
-<span id="cb1-6"><a href=""></a>    <span class="va">self</span>.index.add(embeddings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href=""></a><span class="kw">class</span> DenseRetriever:</span>
+<span id="cb1-2"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, model_name<span class="op">=</span><span class="st">"all-MiniLM-L6-v2"</span>, reranker_model_name<span class="op">=</span><span class="st">"cross-encoder/ms-marco-MiniLM-L-12-v2"</span>):</span>
+<span id="cb1-3"><a href=""></a>        <span class="va">self</span>.model <span class="op">=</span> SentenceTransformer(model_name)</span>
+<span id="cb1-4"><a href=""></a>        <span class="va">self</span>.index <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb1-5"><a href=""></a>        <span class="va">self</span>.documents <span class="op">=</span> []</span>
+<span id="cb1-6"><a href=""></a>        <span class="va">self</span>.reranker <span class="op">=</span> CrossEncoder(reranker_model_name)</span>
+<span id="cb1-7"><a href=""></a></span>
+<span id="cb1-8"><a href=""></a>    <span class="kw">def</span> build_index(<span class="va">self</span>, documents):</span>
+<span id="cb1-9"><a href=""></a>        <span class="co">"""Build a FAISS index for the given documents."""</span></span>
+<span id="cb1-10"><a href=""></a>        <span class="va">self</span>.documents <span class="op">=</span> documents</span>
+<span id="cb1-11"><a href=""></a>        embeddings <span class="op">=</span> <span class="va">self</span>.model.encode(documents, show_progress_bar<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-12"><a href=""></a>        <span class="va">self</span>.index <span class="op">=</span> faiss.IndexFlatL2(embeddings.shape[<span class="dv">1</span>])</span>
+<span id="cb1-13"><a href=""></a>        <span class="va">self</span>.index.add(embeddings)</span>
+<span id="cb1-14"><a href=""></a></span>
+<span id="cb1-15"><a href=""></a>    <span class="kw">def</span> retrieve(<span class="va">self</span>, query, k<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb1-16"><a href=""></a>        <span class="co">"""Retrieve the top-k most relevant documents for a query using FAISS."""</span></span>
+<span id="cb1-17"><a href=""></a>        query_vector <span class="op">=</span> <span class="va">self</span>.model.encode([query])</span>
+<span id="cb1-18"><a href=""></a>        distances, indices <span class="op">=</span> <span class="va">self</span>.index.search(query_vector, k)</span>
+<span id="cb1-19"><a href=""></a>        results <span class="op">=</span> [(<span class="va">self</span>.documents[i], distances[<span class="dv">0</span>][idx]) <span class="cf">for</span> idx, i <span class="kw">in</span> <span class="bu">enumerate</span>(indices[<span class="dv">0</span>])]</span>
+<span id="cb1-20"><a href=""></a>        <span class="cf">return</span> results</span>
+<span id="cb1-21"><a href=""></a></span>
+<span id="cb1-22"><a href=""></a>    <span class="kw">def</span> rerank(<span class="va">self</span>, query, retrieved_docs):</span>
+<span id="cb1-23"><a href=""></a>        <span class="co">"""Re-rank the retrieved documents using a cross-encoder."""</span></span>
+<span id="cb1-24"><a href=""></a>        pairs <span class="op">=</span> [(query, doc[<span class="dv">0</span>]) <span class="cf">for</span> doc <span class="kw">in</span> retrieved_docs]</span>
+<span id="cb1-25"><a href=""></a>        scores <span class="op">=</span> <span class="va">self</span>.reranker.predict(pairs)</span>
+<span id="cb1-26"><a href=""></a>        reranked <span class="op">=</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(retrieved_docs, scores), key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-27"><a href=""></a>        <span class="cf">return</span> [(doc[<span class="dv">0</span>], score) <span class="cf">for</span> doc, score <span class="kw">in</span> reranked]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <aside class="notes">
 <p>[1 min] Now let’s look at the system’s core technical implementation. For retrieval, we use FAISS, a vector search tool, combined with Hugging Face’s SentenceTransformers to create semantic embeddings.</p>
 <style type="text/css">
@@ -386,28 +417,32 @@ Yuting Fan, Peng Li, Yiwei Qi
 <li>Supports user selection of GPT-3.5 or GPT-4.</li>
 <li>Merges user queries with retrieved document content as context.</li>
 </ul>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="kw">def</span> generate_response(<span class="va">self</span>, query, model_name<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>, k<span class="op">=</span><span class="dv">5</span>):</span>
-<span id="cb2-2"><a href=""></a>    <span class="co">"""Generate a response by combining retrieval and generation."""</span></span>
-<span id="cb2-3"><a href=""></a>    <span class="cf">if</span> <span class="kw">not</span> openai.api_key:</span>
-<span id="cb2-4"><a href=""></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"API key is not set. Please enter your OpenAI API key."</span>)</span>
-<span id="cb2-5"><a href=""></a>    </span>
-<span id="cb2-6"><a href=""></a>    retrieved_docs <span class="op">=</span> <span class="va">self</span>.retriever.retrieve(query, k)</span>
-<span id="cb2-7"><a href=""></a>    reranked_docs <span class="op">=</span> <span class="va">self</span>.retriever.rerank(query, retrieved_docs)</span>
-<span id="cb2-8"><a href=""></a>    context <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([<span class="ss">f"</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>doc<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i, (doc, _) <span class="kw">in</span> <span class="bu">enumerate</span>(reranked_docs)])</span>
-<span id="cb2-9"><a href=""></a>    prompt <span class="op">=</span> (</span>
-<span id="cb2-10"><a href=""></a>        <span class="ss">f"Contextual documents:</span><span class="ch">\n</span><span class="sc">{</span>context<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
-<span id="cb2-11"><a href=""></a>        <span class="ss">f"Query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
-<span id="cb2-12"><a href=""></a>        <span class="ss">f"Response:"</span></span>
-<span id="cb2-13"><a href=""></a>    )</span>
-<span id="cb2-14"><a href=""></a>    response <span class="op">=</span> openai.ChatCompletion.create(</span>
-<span id="cb2-15"><a href=""></a>        model<span class="op">=</span>model_name, <span class="co"># change model based on user selection</span></span>
-<span id="cb2-16"><a href=""></a>        messages<span class="op">=</span>[</span>
-<span id="cb2-17"><a href=""></a>            {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You are a helpful assistant."</span>},</span>
-<span id="cb2-18"><a href=""></a>            {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}</span>
-<span id="cb2-19"><a href=""></a>        ],</span>
-<span id="cb2-20"><a href=""></a>        max_tokens<span class="op">=</span><span class="dv">1000</span></span>
-<span id="cb2-21"><a href=""></a>    )</span>
-<span id="cb2-22"><a href=""></a>    <span class="cf">return</span> response[<span class="st">'choices'</span>][<span class="dv">0</span>][<span class="st">'message'</span>][<span class="st">'content'</span>].strip(), reranked_docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="kw">class</span> RAGSystem:</span>
+<span id="cb2-2"><a href=""></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, retriever):</span>
+<span id="cb2-3"><a href=""></a>        <span class="va">self</span>.retriever <span class="op">=</span> retriever</span>
+<span id="cb2-4"><a href=""></a></span>
+<span id="cb2-5"><a href=""></a>    <span class="kw">def</span> generate_response(<span class="va">self</span>, query, model_name<span class="op">=</span><span class="st">"gpt-3.5-turbo"</span>, k<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb2-6"><a href=""></a>        <span class="co">"""Generate a response by combining retrieval and generation."""</span></span>
+<span id="cb2-7"><a href=""></a>        <span class="cf">if</span> <span class="kw">not</span> openai.api_key:</span>
+<span id="cb2-8"><a href=""></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"API key is not set. Please enter your OpenAI API key."</span>)</span>
+<span id="cb2-9"><a href=""></a>        </span>
+<span id="cb2-10"><a href=""></a>        retrieved_docs <span class="op">=</span> <span class="va">self</span>.retriever.retrieve(query, k)</span>
+<span id="cb2-11"><a href=""></a>        reranked_docs <span class="op">=</span> <span class="va">self</span>.retriever.rerank(query, retrieved_docs)</span>
+<span id="cb2-12"><a href=""></a>        context <span class="op">=</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>.join([<span class="ss">f"</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">. </span><span class="sc">{</span>doc<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i, (doc, _) <span class="kw">in</span> <span class="bu">enumerate</span>(reranked_docs)])</span>
+<span id="cb2-13"><a href=""></a>        prompt <span class="op">=</span> (</span>
+<span id="cb2-14"><a href=""></a>            <span class="ss">f"Contextual documents:</span><span class="ch">\n</span><span class="sc">{</span>context<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">"</span></span>
+<span id="cb2-15"><a href=""></a>            <span class="ss">f"Query: </span><span class="sc">{</span>query<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span></span>
+<span id="cb2-16"><a href=""></a>            <span class="ss">f"Response:"</span></span>
+<span id="cb2-17"><a href=""></a>        )</span>
+<span id="cb2-18"><a href=""></a>        response <span class="op">=</span> openai.ChatCompletion.create(</span>
+<span id="cb2-19"><a href=""></a>            model<span class="op">=</span>model_name, <span class="co"># change model based on user selection</span></span>
+<span id="cb2-20"><a href=""></a>            messages<span class="op">=</span>[</span>
+<span id="cb2-21"><a href=""></a>                {<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: <span class="st">"You are a helpful assistant."</span>},</span>
+<span id="cb2-22"><a href=""></a>                {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt}</span>
+<span id="cb2-23"><a href=""></a>            ],</span>
+<span id="cb2-24"><a href=""></a>            max_tokens<span class="op">=</span><span class="dv">1000</span></span>
+<span id="cb2-25"><a href=""></a>        )</span>
+<span id="cb2-26"><a href=""></a>        <span class="cf">return</span> response[<span class="st">'choices'</span>][<span class="dv">0</span>][<span class="st">'message'</span>][<span class="st">'content'</span>].strip(), reranked_docs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <aside class="notes">
 <p>[1 min] For generation, we use OpenAI’s GPT models, with users having the option to select GPT-3.5 or GPT-4. The user input is combined with document content to generate accurate and relevant responses.</p>
 <style type="text/css">
@@ -424,31 +459,16 @@ Yuting Fan, Peng Li, Yiwei Qi
 </section>
 <section id="implementation-details-2" class="slide level2">
 <h2>Implementation Details</h2>
-<h3 id="reranking">Reranking</h3>
-<ul>
-<li>Reranking is introduced in the retrieval process, and sorted the preliminary search results by the <code>CrossEncoder</code> model (cross-encoder/ms-marco-MiniLM-L-12-v2).</li>
-<li>In the reordering stage, semantic matching scores of query and candidate document pairs are used to further optimize the search results</li>
-</ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="kw">def</span> rerank(<span class="va">self</span>, query, retrieved_docs):</span>
-<span id="cb3-2"><a href=""></a>    <span class="co">"""Re-rank the retrieved documents using a cross-encoder."""</span></span>
-<span id="cb3-3"><a href=""></a>    pairs <span class="op">=</span> [(query, doc[<span class="dv">0</span>]) <span class="cf">for</span> doc <span class="kw">in</span> retrieved_docs]</span>
-<span id="cb3-4"><a href=""></a>    scores <span class="op">=</span> <span class="va">self</span>.reranker.predict(pairs)</span>
-<span id="cb3-5"><a href=""></a>    reranked <span class="op">=</span> <span class="bu">sorted</span>(<span class="bu">zip</span>(retrieved_docs, scores), key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>], reverse<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-6"><a href=""></a>    <span class="cf">return</span> [(doc[<span class="dv">0</span>], score) <span class="cf">for</span> doc, score <span class="kw">in</span> reranked]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-<section id="user-interface" class="slide level2">
-<h2>User Interface</h2>
+<h3 id="user-interface">User Interface</h3>
 <div class="columns">
-<div class="column" style="width:50%;">
+<div class="column" style="width:65%;">
 <p><img data-src="images/UI.png" style="width 100%"></p>
-<div class="slide" style="font-size: 50%;">
-<p><a href="https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app">Link to Contextual Retrieval Augmented Generation (RAG) System</a></p>
-</div>
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="width:35%;">
 <ul>
-<li>Real-time Document Upload: Users can update the knowledge base on the fly.</li>
-<li>Multiple GPT Models: Choose between GPT-3.5 and GPT-4 for generation.</li>
-<li>Retrieval Transparency: Source of retrieved data is embedded in responses.</li>
+<li>Real-time Document Upload</li>
+<li>Multiple GPT Models</li>
+<li>Retrieval Transparency</li>
+<li><a href="https://yuting-fan-265-rag-system-rag-app-new-v1sxnc.streamlit.app">Link</a></li>
 </ul>
 </div></div>
 <aside class="notes">
@@ -469,12 +489,16 @@ Yuting Fan, Peng Li, Yiwei Qi
 </section>
 <section id="example" class="slide level2">
 <h2>Example</h2>
-<ul>
-<li>Document Uploaded: Declaration of Independence</li>
-<li>Query: What is the attitude of this writer?</li>
-</ul>
 
-<img data-src="images/example.png" class="quarto-figure quarto-figure-center r-stretch" style="width: 100%"></section></section>
+<img data-src="images/example1.png" class="quarto-figure quarto-figure-center r-stretch" style="width: 100%"></section>
+<section id="example-1" class="slide level2">
+<h2>Example</h2>
+
+<img data-src="images/example2.png" class="quarto-figure quarto-figure-center r-stretch" style="width: 100%"></section>
+<section id="example-2" class="slide level2">
+<h2>Example</h2>
+
+<img data-src="images/example3.png" class="quarto-figure quarto-figure-center r-stretch" style="width: 100%"></section></section>
 <section>
 <section id="evaluation-conclusion" class="title-slide slide level1 center">
 <h1>Evaluation &amp; Conclusion</h1>
